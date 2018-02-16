@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-// TODO: copy this class twice and make a separate specific row name adapter and a row sum adapter
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -23,13 +22,11 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
     }
 
     private Context context;
-    private List<String> rowNames;
-    private CellAdapter cellAdapter;
+    private List<List<Integer>> values;
 
-    public RowAdapter(Context context, List<String> rowNames, CellAdapter cellAdapter) {
+    public RowAdapter(Context context, List<List<Integer>> values) {
         this.context = context;
-        this.rowNames = rowNames;
-        this.cellAdapter = cellAdapter;
+        this.values = values;
     }
 
     private Context getContext() {
@@ -40,19 +37,19 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
     public RowAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View rowView = inflater.inflate(R.layout.row_item, parent, false);
-        return new ViewHolder(rowView);
+        View row = inflater.inflate(R.layout.row_item, parent, false);
+        return new ViewHolder(row);
     }
 
     @Override
     public void onBindViewHolder(RowAdapter.ViewHolder viewHolder, int position) {
-        // String rowName = rowNames.get(position);
+        // List<Integer> cellValues = values.get(position);
         // View exampleView = viewHolder.exampleView;
-        // exampleView.doSomething(rowName);
+        // exampleView.doSomething(cellValues);
     }
 
     @Override
     public int getItemCount() {
-        return rowNames.size();
+        return values.size();
     }
 }

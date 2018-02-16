@@ -6,7 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.giljam.daniel.chisquaredtest.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <fragment
+        android:id="@+id/fragment"
+        android:name="com.giljam.daniel.chisquaredtest.TableLayoutFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </android.support.constraint.ConstraintLayout>

@@ -1,0 +1,60 @@
+<android.support.constraint.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.giljam.daniel.chisquaredtest.TableLayoutFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/col_headers"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/table_layout"
+        app:layout_constraintEnd_toStartOf="@id/row_sums"
+        app:layout_constraintStart_toEndOf="@id/row_headers"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/row_headers"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/col_sums"
+        app:layout_constraintEnd_toStartOf="@id/table_layout"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/col_headers" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/table_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/col_sums"
+        app:layout_constraintEnd_toStartOf="@id/row_sums"
+        app:layout_constraintHorizontal_weight="10"
+        app:layout_constraintStart_toEndOf="@id/row_headers"
+        app:layout_constraintTop_toBottomOf="@id/col_headers"
+        app:layout_constraintVertical_weight="10" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/col_sums"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/row_sums"
+        app:layout_constraintStart_toEndOf="@id/row_headers"
+        app:layout_constraintTop_toBottomOf="@id/table_layout"
+        app:layout_constraintVertical_weight="1" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/row_sums"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/col_sums"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/table_layout"
+        app:layout_constraintTop_toBottomOf="@id/col_headers" />
+
+</android.support.constraint.ConstraintLayout>

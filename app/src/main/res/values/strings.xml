@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Chi-Squared Test</string>
+    <string name="cell_button_text">%1$d&lt;br/&gt;&lt;b&gt;+1&lt;/b&gt;</string>
 </resources>

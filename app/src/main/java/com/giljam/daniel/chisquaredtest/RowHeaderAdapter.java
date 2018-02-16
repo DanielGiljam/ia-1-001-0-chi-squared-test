@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-// TODO: copy this class twice and make a separate specific column name adapter and a column sum adapter
-public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
+public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -22,11 +21,11 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
     }
 
     private Context context;
-    private List<Integer> cellValues;
+    private List<String> rowHeaders;
 
-    public CellAdapter(Context context, List<Integer> cellValues) {
+    public RowHeaderAdapter(Context context, List<String> rowHeaders) {
         this.context = context;
-        this.cellValues = cellValues;
+        this.rowHeaders = rowHeaders;
     }
 
     private Context getContext() {
@@ -34,22 +33,22 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
     }
 
     @Override
-    public CellAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RowHeaderAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View cell = inflater.inflate(R.layout.cell_item, parent, false);
-        return new ViewHolder(cell);
+        View rowHeaderCell = inflater.inflate(R.layout.row_header_item, parent, false);
+        return new ViewHolder(rowHeaderCell);
     }
 
     @Override
-    public void onBindViewHolder(CellAdapter.ViewHolder viewHolder, int position) {
-        // int cellValue = cellValues.get(position);
+    public void onBindViewHolder(RowHeaderAdapter.ViewHolder viewHolder, int position) {
+        // String rowHeader = rowHeaders.get(position);
         // View exampleView = viewHolder.exampleView;
-        // exampleView.doSomething(cellValue);
+        // exampleView.doSomething(rowHeader);
     }
 
     @Override
     public int getItemCount() {
-        return cellValues.size();
+        return rowHeaders.size();
     }
 }

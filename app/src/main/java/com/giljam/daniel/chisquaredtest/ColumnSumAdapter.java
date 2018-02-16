@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-// TODO: copy this class twice and make a separate specific column name adapter and a column sum adapter
-public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
+public class ColumnSumAdapter extends RecyclerView.Adapter<ColumnSumAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -22,11 +21,11 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
     }
 
     private Context context;
-    private List<Integer> cellValues;
+    private List<Integer> colSums;
 
-    public CellAdapter(Context context, List<Integer> cellValues) {
+    public ColumnSumAdapter(Context context, List<Integer> colSums) {
         this.context = context;
-        this.cellValues = cellValues;
+        this.colSums = colSums;
     }
 
     private Context getContext() {
@@ -34,22 +33,22 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
     }
 
     @Override
-    public CellAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ColumnSumAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View cell = inflater.inflate(R.layout.cell_item, parent, false);
-        return new ViewHolder(cell);
+        View colSumCell = inflater.inflate(R.layout.col_sum_item, parent, false);
+        return new ViewHolder(colSumCell);
     }
 
     @Override
-    public void onBindViewHolder(CellAdapter.ViewHolder viewHolder, int position) {
-        // int cellValue = cellValues.get(position);
+    public void onBindViewHolder(ColumnSumAdapter.ViewHolder viewHolder, int position) {
+        // String colSum = colSums.get(position);
         // View exampleView = viewHolder.exampleView;
-        // exampleView.doSomething(cellValue);
+        // exampleView.doSomething(colSum);
     }
 
     @Override
     public int getItemCount() {
-        return cellValues.size();
+        return colSums.size();
     }
 }

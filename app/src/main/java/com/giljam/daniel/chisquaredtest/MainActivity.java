@@ -1,12 +1,13 @@
 package com.giljam.daniel.chisquaredtest;
 
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TableLayoutFragment.OnFragmentInteractionListener {
 
     /**
      * This variable is required for performing chi-squared-tests.<br>
@@ -139,5 +140,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private void Refresh() {
         // Code comes here...
+    }
+
+    /**
+     * Required for communication between {@link TableLayoutFragment} and this activity (the {@link MainActivity}).
+     * @param uri Hasn't been programmed yet...
+     */
+    public void onFragmentInteraction(Uri uri) {
+        // Code comes here (maybe?)...
     }
 }

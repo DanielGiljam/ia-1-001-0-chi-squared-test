@@ -131,4 +131,13 @@ public class MainActivity extends AppCompatActivity {
         }
         Refresh();
     }
+
+    /**
+     * Should be triggered each time a modification has occured in any of the high-priority variables.<br>
+     * This method updates the chi-squared-test information by first supplying the specialized table object with the latest data (as it's needed for the chi-squared-test).<br>
+     * Then it updates the table layout shown on the screen by notifying all adapters about data change and, if necessary, taking care of any inflation/deflation of the table layout.
+     */
+    private void Refresh() {
+        // Code comes here...
+    }
 }

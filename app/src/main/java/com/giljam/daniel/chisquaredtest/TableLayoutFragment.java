@@ -1,15 +1,17 @@
 package com.giljam.daniel.chisquaredtest;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,6 +76,11 @@ public class TableLayoutFragment extends Fragment {
     private RecyclerView rowSumCol;
 
     /**
+     * Variable for the {@link TextView} that substitutes with a message when there is no table data to draw.
+     */
+    private TextView noTableText;
+
+    /**
      * Custom {@link RecyclerView.Adapter} for translating the column names data
      * so that it can be displayed by the colHeaders {@link RecyclerView}.
      */
@@ -113,7 +120,10 @@ public class TableLayoutFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public TableLayoutFragment() {
-        // Required empty public constructor
+        System.out.println("[ListDebugMessage] initialized empty lists");
+        rowNames = new ArrayList<>();
+        colNames = new ArrayList<>();
+        values = new ArrayList<>();
     }
 
     /**
@@ -127,10 +137,18 @@ public class TableLayoutFragment extends Fragment {
         // Instantiate this fragment
         TableLayoutFragment fragment = new TableLayoutFragment();
 
-        // Pass provided parameter values to this instance of the fragment
-        fragment.rowNames = rowNames;
-        fragment.colNames = colNames;
-        fragment.values = values;
+        // Pass provided parameter values (if they exist) to this instance of the fragment
+        if (rowNames == null || colNames == null || values == null) {
+            System.out.println("[ListDebugMessage] initialized empty lists");
+            fragment.rowNames = new ArrayList<>();
+            fragment.colNames = new ArrayList<>();
+            fragment.values = new ArrayList<>();
+        } else {
+            System.out.println("[ListDebugMessage] lists were provided as parameters");
+            fragment.rowNames = rowNames;
+            fragment.colNames = colNames;
+            fragment.values = values;
+        }
 
         /*Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -163,6 +181,7 @@ public class TableLayoutFragment extends Fragment {
         tableLayout = view.findViewById(R.id.table_layout);
         colSumRow = view.findViewById(R.id.col_sums);
         rowSumCol = view.findViewById(R.id.row_sums);
+        noTableText = view.findViewById(R.id.no_table_text);
 
         // initialize the adapters of the RecyclerViews
         colHeaderAdapter = new ColumnHeaderAdapter(getContext(), colNames);
@@ -184,8 +203,32 @@ public class TableLayoutFragment extends Fragment {
         tableLayout.setAdapter(rowAdapter);
         colSumRow.setAdapter(colSumAdapter);
         rowSumCol.setAdapter(rowSumAdapter);
+
+        // if the variables – that store this fragment's copy of the table data – are empty, then table won't be shown
+        System.out.println("[ListDebugMessage] rowNames: " + rowNames);
+        System.out.println("[ListDebugMessage] colNames: " + colNames);
+        System.out.println("[ListDebugMessage] values: " + values);
+        if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) ChangeTableVisibility(false);
         
         return view;
+    }
+
+    private void ChangeTableVisibility(boolean visible) {
+        if (visible) {
+            colHeaders.setVisibility(View.VISIBLE);
+            rowHeaders.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
+            colSumRow.setVisibility(View.VISIBLE);
+            rowSumCol.setVisibility(View.VISIBLE);
+            noTableText.setVisibility(View.GONE);
+        } else {
+            colHeaders.setVisibility(View.GONE);
+            rowHeaders.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
+            colSumRow.setVisibility(View.GONE);
+            rowSumCol.setVisibility(View.GONE);
+            noTableText.setVisibility(View.VISIBLE);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

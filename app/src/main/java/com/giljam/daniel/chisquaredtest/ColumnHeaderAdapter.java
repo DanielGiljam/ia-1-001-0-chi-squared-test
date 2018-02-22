@@ -5,6 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -12,11 +15,11 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View exampleView;
+        public TextView text;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            // exampleView = itemView.findViewById();
+            text = itemView.findViewById(R.id.col_header_item_text);
         }
     }
 
@@ -42,9 +45,7 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
 
     @Override
     public void onBindViewHolder(ColumnHeaderAdapter.ViewHolder viewHolder, int position) {
-        // String colHeader = colHeaders.get(position);
-        // View exampleView = viewHolder.exampleView;
-        // exampleView.doSomething(colHeader);
+        viewHolder.text.setText(colHeaders.get(position));
     }
 
     @Override

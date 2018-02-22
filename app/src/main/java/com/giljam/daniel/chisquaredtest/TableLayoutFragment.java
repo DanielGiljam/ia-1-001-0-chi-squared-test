@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -169,6 +170,13 @@ public class TableLayoutFragment extends Fragment {
         rowAdapter = new RowAdapter(getContext(), values);
         colSumAdapter = new ColumnSumAdapter(getContext(), colSums);
         rowSumAdapter = new RowSumAdapter(getContext(), rowSums);
+
+        // set layout managers for the RecyclerViews
+        colHeaders.setLayoutManager(new LinearLayoutManager(getContext(), 0, false));
+        rowHeaders.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
+        tableLayout.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
+        colSumRow.setLayoutManager(new LinearLayoutManager(getContext(), 0, false));
+        rowSumCol.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
 
         // set adapters for corresponding RecyclerViews
         colHeaders.setAdapter(colHeaderAdapter);

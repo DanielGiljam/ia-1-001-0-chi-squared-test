@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -12,11 +13,11 @@ public class ColumnSumAdapter extends RecyclerView.Adapter<ColumnSumAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View exampleView;
+        public TextView sumText;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            // exampleView = itemView.findViewById();
+            sumText = itemView.findViewById(R.id.col_sum_item_text);
         }
     }
 
@@ -42,9 +43,7 @@ public class ColumnSumAdapter extends RecyclerView.Adapter<ColumnSumAdapter.View
 
     @Override
     public void onBindViewHolder(ColumnSumAdapter.ViewHolder viewHolder, int position) {
-        // String colSum = colSums.get(position);
-        // View exampleView = viewHolder.exampleView;
-        // exampleView.doSomething(colSum);
+        viewHolder.sumText.setText(colSums.get(position));
     }
 
     @Override

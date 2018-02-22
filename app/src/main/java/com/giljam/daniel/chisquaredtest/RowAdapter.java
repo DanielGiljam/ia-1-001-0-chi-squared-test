@@ -1,32 +1,37 @@
 package com.giljam.daniel.chisquaredtest;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View exampleView;
+        public RecyclerView row;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            // exampleView = itemView.findViewById();
+            row = itemView.findViewById(R.id.row_recycler_view);
         }
     }
 
     private Context context;
     private List<List<Integer>> values;
+    private List<CellAdapter> cellAdapters;
+    private List<RecyclerView> rows;
 
     public RowAdapter(Context context, List<List<Integer>> values) {
         this.context = context;
         this.values = values;
+        cellAdapters = new ArrayList<>();
+        rows = new ArrayList<>();
     }
 
     private Context getContext() {
@@ -37,15 +42,18 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
     public RowAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View row = inflater.inflate(R.layout.row_item, parent, false);
-        return new ViewHolder(row);
+        View rowView = inflater.inflate(R.layout.row_item, parent, false);
+        return new ViewHolder(rowView);
     }
 
     @Override
     public void onBindViewHolder(RowAdapter.ViewHolder viewHolder, int position) {
-        // List<Integer> cellValues = values.get(position);
-        // View exampleView = viewHolder.exampleView;
-        // exampleView.doSomething(cellValues);
+        CellAdapter cellAdapter = new CellAdapter(getContext(), values.get(position));
+        cellAdapters.add(position, cellAdapter);
+        RecyclerView row = viewHolder.row;
+        row.setLayoutManager(new LinearLayoutManager(getContext(), 0, false));
+        row.setAdapter(cellAdapters.get(position));
+        rows.add(position, row);
     }
 
     @Override

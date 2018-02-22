@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -12,11 +13,11 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View exampleView;
+        public TextView text;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            // exampleView = itemView.findViewById();
+            text = itemView.findViewById(R.id.row_header_item_text);
         }
     }
 
@@ -42,9 +43,7 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
 
     @Override
     public void onBindViewHolder(RowHeaderAdapter.ViewHolder viewHolder, int position) {
-        // String rowHeader = rowHeaders.get(position);
-        // View exampleView = viewHolder.exampleView;
-        // exampleView.doSomething(rowHeader);
+        viewHolder.text.setText(rowHeaders.get(position));
     }
 
     @Override

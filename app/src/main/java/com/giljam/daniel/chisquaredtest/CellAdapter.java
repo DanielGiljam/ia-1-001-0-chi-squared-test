@@ -2,22 +2,23 @@ package com.giljam.daniel.chisquaredtest;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.List;
 
-// TODO: copy this class twice and make a separate specific column name adapter and a column sum adapter
 public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View exampleView;
+        public Button button;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            // exampleView = itemView.findViewById();
+            button = itemView.findViewById(R.id.cell_button);
         }
     }
 
@@ -43,9 +44,9 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(CellAdapter.ViewHolder viewHolder, int position) {
-        // int cellValue = cellValues.get(position);
-        // View exampleView = viewHolder.exampleView;
-        // exampleView.doSomething(cellValue);
+        Button button = viewHolder.button;
+        CharSequence text = Html.fromHtml(getContext().getString(R.string.cell_button_text, cellValues.get(position)));
+        button.setText(text);
     }
 
     @Override

@@ -7,7 +7,7 @@
     tools:context="com.giljam.daniel.chisquaredtest.MainActivity">
 
     <fragment
-        android:id="@+id/fragment"
+        android:id="@+id/table_layout_fragment"
         android:name="com.giljam.daniel.chisquaredtest.TableLayoutFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

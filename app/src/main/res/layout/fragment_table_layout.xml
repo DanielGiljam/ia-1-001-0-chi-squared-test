@@ -9,8 +9,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/col_headers"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_orange_dark"
         app:layout_constraintBottom_toTopOf="@id/table_layout"
         app:layout_constraintEnd_toStartOf="@id/row_sums"
         app:layout_constraintStart_toEndOf="@id/row_headers"
@@ -21,6 +22,7 @@
         android:id="@+id/row_headers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark"
         app:layout_constraintBottom_toTopOf="@id/col_sums"
         app:layout_constraintEnd_toStartOf="@id/table_layout"
         app:layout_constraintHorizontal_weight="1"
@@ -29,8 +31,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/table_layout"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_dark"
         app:layout_constraintBottom_toTopOf="@id/col_sums"
         app:layout_constraintEnd_toStartOf="@id/row_sums"
         app:layout_constraintHorizontal_weight="10"
@@ -40,8 +43,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/col_sums"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_purple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/row_sums"
         app:layout_constraintStart_toEndOf="@id/row_headers"
@@ -50,13 +54,14 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/row_sums"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light"
         app:layout_constraintBottom_toTopOf="@id/col_sums"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/table_layout"
-        app:layout_constraintTop_toBottomOf="@id/col_headers" >
+        app:layout_constraintTop_toBottomOf="@id/col_headers">
 
     </android.support.v7.widget.RecyclerView>
 

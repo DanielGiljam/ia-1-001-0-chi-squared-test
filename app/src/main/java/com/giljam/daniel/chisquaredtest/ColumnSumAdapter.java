@@ -43,7 +43,7 @@ public class ColumnSumAdapter extends RecyclerView.Adapter<ColumnSumAdapter.View
 
     @Override
     public void onBindViewHolder(ColumnSumAdapter.ViewHolder viewHolder, int position) {
-        viewHolder.sumText.setText(colSums.get(position));
+        viewHolder.sumText.setText(getContext().getString(R.string.sum_item_text, colSums.get(position)));
     }
 
     @Override

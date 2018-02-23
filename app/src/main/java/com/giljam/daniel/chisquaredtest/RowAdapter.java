@@ -34,6 +34,11 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
         rows = new ArrayList<>();
     }
 
+    public void notifyDataSetsChanged() {
+        for (CellAdapter cellAdapter : cellAdapters) cellAdapter.notifyDataSetChanged();
+        this.notifyDataSetChanged();
+    }
+
     private Context getContext() {
         return context;
     }
@@ -50,14 +55,15 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
     public void onBindViewHolder(RowAdapter.ViewHolder viewHolder, int position) {
         CellAdapter cellAdapter = new CellAdapter(getContext(), values.get(position));
         cellAdapters.add(position, cellAdapter);
-        RecyclerView row = viewHolder.row;
-        row.setLayoutManager(new LinearLayoutManager(getContext(), 0, false));
-        row.setAdapter(cellAdapters.get(position));
-        rows.add(position, row);
+        rows.add(position, viewHolder.row);
+        rows.get(position).setLayoutManager(new LinearLayoutManager(getContext(), 0, false));
+        rows.get(position).setAdapter(cellAdapters.get(position));
     }
 
     @Override
     public int getItemCount() {
         return values.size();
     }
+
+
 }

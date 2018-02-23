@@ -120,10 +120,11 @@ public class TableLayoutFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public TableLayoutFragment() {
-        System.out.println("[ListDebugMessage] initialized empty lists");
         rowNames = new ArrayList<>();
         colNames = new ArrayList<>();
         values = new ArrayList<>();
+        rowSums = new ArrayList<>();
+        colSums = new ArrayList<>();
     }
 
     /**
@@ -139,15 +140,16 @@ public class TableLayoutFragment extends Fragment {
 
         // Pass provided parameter values (if they exist) to this instance of the fragment
         if (rowNames == null || colNames == null || values == null) {
-            System.out.println("[ListDebugMessage] initialized empty lists");
             fragment.rowNames = new ArrayList<>();
             fragment.colNames = new ArrayList<>();
             fragment.values = new ArrayList<>();
+            fragment.rowSums = new ArrayList<>();
+            fragment.colSums = new ArrayList<>();
         } else {
-            System.out.println("[ListDebugMessage] lists were provided as parameters");
             fragment.rowNames = rowNames;
             fragment.colNames = colNames;
             fragment.values = values;
+            fragment.calculateSums();
         }
 
         /*Bundle args = new Bundle();
@@ -205,15 +207,17 @@ public class TableLayoutFragment extends Fragment {
         rowSumCol.setAdapter(rowSumAdapter);
 
         // if the variables – that store this fragment's copy of the table data – are empty, then table won't be shown
-        System.out.println("[ListDebugMessage] rowNames: " + rowNames);
-        System.out.println("[ListDebugMessage] colNames: " + colNames);
-        System.out.println("[ListDebugMessage] values: " + values);
-        if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) ChangeTableVisibility(false);
+        if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) changeTableVisibility(false);
         
         return view;
     }
 
-    private void ChangeTableVisibility(boolean visible) {
+    /**
+     * Hides the {@link View} objects making up the table and shows the {@link TextView} that substitutes with a message,
+     * or shows the {@link View} objects making up the table and hides the substituting {@link TextView}.
+     * @param visible If set to true, table will be shown. If set to false, table will be hidden.
+     */
+    private void changeTableVisibility(boolean visible) {
         if (visible) {
             colHeaders.setVisibility(View.VISIBLE);
             rowHeaders.setVisibility(View.VISIBLE);
@@ -229,6 +233,54 @@ public class TableLayoutFragment extends Fragment {
             rowSumCol.setVisibility(View.GONE);
             noTableText.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * Function that populates the {@link TableLayoutFragment#colSums} and {@link TableLayoutFragment#rowSums} {@link List}s
+     * with suitable values calculated based on the {@link TableLayoutFragment#values} variable. Consequentially a pre-condition for
+     * this function to work, is that the {@link TableLayoutFragment#values} variable already is populated with suitable data.
+     * This function should be executed every time after the {@link TableLayoutFragment#values} variable has been re-assigned/updated,
+     * so that the sum-values stay up to date.
+     */
+    // TODO: Implement better sum calculation!
+    private void calculateSums() {
+
+        // if any of the sum-lists are still null, then that will finally be taken care of here
+        if (rowSums == null) rowSums = new ArrayList<>();
+        if (colSums == null) colSums = new ArrayList<>();
+
+        for (List<Integer> cellValues : values) rowSums.add(0);
+
+        for (int columnValue : values.get(0)) colSums.add(0);
+    }
+
+    /**
+     * Updates the {@link TableLayoutFragment}'s copy of the data and notifies all the adapters about it.
+     * @param rowNames The {@link TableLayoutFragment}'s copy of the row names.
+     * @param colNames The {@link TableLayoutFragment}'s copy of the column names.
+     * @param values The {@link TableLayoutFragment}'s copy of the values.
+     */
+    public void notifyDataSetsChanged(List<String> rowNames,
+                                      List<String> colNames,
+                                      List<List<Integer>> values) {
+
+        // changing the data sets with updated information
+        this.rowNames = rowNames;
+        this.colNames = colNames;
+        this.values = values;
+        calculateSums();
+
+        // notifying all adapters that the data set has changed
+        colHeaderAdapter.notifyDataSetChanged();
+        rowHeaderAdapter.notifyDataSetChanged();
+        rowAdapter.notifyDataSetsChanged();
+        colSumAdapter.notifyDataSetChanged();
+        rowSumAdapter.notifyDataSetChanged();
+
+        // toggle table visibility depending on the state of the data set (empty or not empty)
+        if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) changeTableVisibility(false);
+        else changeTableVisibility(true);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

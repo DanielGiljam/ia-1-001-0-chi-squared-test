@@ -45,6 +45,13 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
      */
     private List<List<Integer>> values;
 
+    /**
+     * Variable for the fragment that draws the grid of values onto the screen as an interactive table.
+     * Fragment makes up a big part of the app.
+     * Variable used for executing the fragment's methods and functions from this activity (the main activity).
+     */
+    private TableLayoutFragment tableLayoutFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -59,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
         values = null;
 
         // initialize UI-related variables
-        // code comes here...
+        tableLayoutFragment = (TableLayoutFragment) getFragmentManager().findFragmentById(R.id.table_layout_fragment);
 
         // set up managers and adapters
         // code comes here...
@@ -139,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
      * Then it updates the table layout shown on the screen by notifying all adapters about data change and, if necessary, taking care of any inflation/deflation of the table layout.
      */
     private void Refresh() {
-        // Code comes here...
+        tableLayoutFragment.notifyDataSetsChanged(rowNames, colNames, values);
     }
 
     /**

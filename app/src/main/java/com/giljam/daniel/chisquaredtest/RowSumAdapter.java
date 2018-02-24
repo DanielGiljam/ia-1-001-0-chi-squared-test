@@ -13,20 +13,57 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView sumText;
+        public TextView text;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            sumText = itemView.findViewById(R.id.row_sum_item_text);
+            text = itemView.findViewById(R.id.row_sum_item_text);
+            text.post(new Runnable() {
+                @Override
+                public void run() {
+                    width = text.getWidth();
+                    height = text.getHeight();
+                    System.out.println("[DEBUG]: (from post) colSum " + debugIterator + " text dimensions " + width + ", " + height);
+                    debugIterator++;
+                }
+            });
         }
     }
 
     private Context context;
     private List<Integer> rowSums;
 
+    private int width = 0;
+    private int height = 0;
+
+    private boolean adaptWidth = false;
+    private boolean adaptHeight = false;
+
+    private int debugIterator = 0;
+
     public RowSumAdapter(Context context, List<Integer> rowSums) {
         this.context = context;
         this.rowSums = rowSums;
+    }
+
+    public void setWidth(boolean adapt, int width) {
+        adaptWidth = adapt;
+        this.width = width;
+    }
+
+    public void setHeight(boolean adapt, int height) {
+        adaptHeight = adapt;
+        this.height = height;
+    }
+
+    public void resetWidth() {
+        adaptWidth = false;
+        width = 0;
+    }
+
+    public void resetHeight() {
+        adaptHeight = false;
+        height = 0;
     }
 
     private Context getContext() {
@@ -43,7 +80,9 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(RowSumAdapter.ViewHolder viewHolder, int position) {
-        viewHolder.sumText.setText(getContext().getString(R.string.sum_item_text, rowSums.get(position)));
+        viewHolder.text.setText(getContext().getString(R.string.sum_item_text, rowSums.get(position)));
+        if (adaptWidth) viewHolder.text.setWidth(width);
+        if (adaptHeight) viewHolder.text.setHeight(height);
     }
 
     @Override

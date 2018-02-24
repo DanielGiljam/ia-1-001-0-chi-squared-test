@@ -19,6 +19,15 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
         public ViewHolder(View itemView) {
             super(itemView);
             button = itemView.findViewById(R.id.cell_button);
+            button.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (buttonWidth == 0) buttonWidth = button.getWidth();
+                    if (buttonHeight == 0) buttonHeight = button.getHeight();
+                    System.out.println("[DEBUG]: (from post) cellButton " + debugIterator + " dimensions " + buttonWidth + ", " + buttonHeight);
+                    debugIterator++;
+                }
+            });
         }
     }
 
@@ -27,6 +36,11 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
 
     private int buttonWidth = 0;
     private int buttonHeight = 0;
+
+    private boolean adaptWidth = false;
+    private boolean adaptHeight = false;
+
+    private int debugIterator = 0;
 
     public CellAdapter(Context context, List<Integer> cellValues) {
         this.context = context;
@@ -39,6 +53,16 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
 
     public int getButtonHeight() {
         return buttonHeight;
+    }
+
+    public void setButtonWidth(boolean adapt, int width) {
+        adaptWidth = adapt;
+        buttonWidth = width;
+    }
+
+    public void setButtonHeight(boolean adapt, int height) {
+        adaptHeight = adapt;
+        buttonHeight = height;
     }
 
     private Context getContext() {
@@ -58,10 +82,8 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
         Button button = viewHolder.button;
         CharSequence text = Html.fromHtml(getContext().getString(R.string.cell_button_text, cellValues.get(position)));
         button.setText(text);
-        if (buttonWidth == 0 || buttonHeight == 0) {
-            buttonWidth = button.getWidth();
-            buttonHeight = button.getHeight();
-        }
+        if (adaptWidth) button.setWidth(buttonWidth);
+        if (adaptHeight) button.setHeight(buttonHeight);
     }
 
     @Override

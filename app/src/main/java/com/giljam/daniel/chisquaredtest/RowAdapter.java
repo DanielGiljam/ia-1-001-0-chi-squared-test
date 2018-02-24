@@ -42,6 +42,22 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
         return cellAdapters.get(0).getButtonHeight();
     }
 
+    public void setCellButtonWidth(boolean adapt, int width) {
+        for (CellAdapter cellAdapter : cellAdapters) cellAdapter.setButtonWidth(adapt, width);
+    }
+
+    public void setCellButtonHeight(boolean adapt, int height) {
+        for (CellAdapter cellAdapter : cellAdapters) cellAdapter.setButtonHeight(adapt, height);
+    }
+
+    public void resetCellButtonWidth() {
+        for (CellAdapter cellAdapter : cellAdapters) cellAdapter.setButtonWidth(false, 0);
+    }
+
+    public void resetCellButtonHeight() {
+        for (CellAdapter cellAdapter : cellAdapters) cellAdapter.setButtonHeight(false, 0);
+    }
+
     private Context getContext() {
         return context;
     }

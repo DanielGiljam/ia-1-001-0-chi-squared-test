@@ -25,9 +25,20 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
     private Context context;
     private List<Integer> cellValues;
 
+    private int buttonWidth = 0;
+    private int buttonHeight = 0;
+
     public CellAdapter(Context context, List<Integer> cellValues) {
         this.context = context;
         this.cellValues = cellValues;
+    }
+
+    public int getButtonWidth() {
+        return buttonWidth;
+    }
+
+    public int getButtonHeight() {
+        return buttonHeight;
     }
 
     private Context getContext() {
@@ -47,6 +58,10 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
         Button button = viewHolder.button;
         CharSequence text = Html.fromHtml(getContext().getString(R.string.cell_button_text, cellValues.get(position)));
         button.setText(text);
+        if (buttonWidth == 0 || buttonHeight == 0) {
+            buttonWidth = button.getWidth();
+            buttonHeight = button.getHeight();
+        }
     }
 
     @Override

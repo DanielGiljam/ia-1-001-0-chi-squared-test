@@ -24,9 +24,15 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
     private Context context;
     private List<String> rowHeaders;
 
+    private int rowHeaderHeight = 0;
+
     public RowHeaderAdapter(Context context, List<String> rowHeaders) {
         this.context = context;
         this.rowHeaders = rowHeaders;
+    }
+
+    public int getRowHeaderHeight() {
+        return rowHeaderHeight;
     }
 
     private Context getContext() {
@@ -44,6 +50,7 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
     @Override
     public void onBindViewHolder(RowHeaderAdapter.ViewHolder viewHolder, int position) {
         viewHolder.text.setText(rowHeaders.get(position));
+        if (rowHeaderHeight != 0 && viewHolder.text.getHeight() > rowHeaderHeight) rowHeaderHeight = viewHolder.text.getHeight();
     }
 
     @Override

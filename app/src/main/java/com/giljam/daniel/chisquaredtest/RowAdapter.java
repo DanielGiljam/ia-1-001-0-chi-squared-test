@@ -34,9 +34,12 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
         rows = new ArrayList<>();
     }
 
-    public void notifyDataSetsChanged() {
-        for (CellAdapter cellAdapter : cellAdapters) cellAdapter.notifyDataSetChanged();
-        this.notifyDataSetChanged();
+    public int getCellButtonWidth() {
+        return cellAdapters.get(0).getButtonWidth();
+    }
+
+    public int getCellButtonHeight() {
+        return cellAdapters.get(0).getButtonHeight();
     }
 
     private Context getContext() {
@@ -64,6 +67,4 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
     public int getItemCount() {
         return values.size();
     }
-
-
 }

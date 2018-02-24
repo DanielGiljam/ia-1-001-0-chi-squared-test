@@ -26,9 +26,15 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
     private Context context;
     private List<String> colHeaders;
 
+    private int colHeaderWidth = 0;
+
     public ColumnHeaderAdapter(Context context, List<String> colHeaders) {
         this.context = context;
         this.colHeaders = colHeaders;
+    }
+
+    public int getColHeaderWidth() {
+        return colHeaderWidth;
     }
 
     private Context getContext() {
@@ -46,6 +52,7 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
     @Override
     public void onBindViewHolder(ColumnHeaderAdapter.ViewHolder viewHolder, int position) {
         viewHolder.text.setText(colHeaders.get(position));
+        if (colHeaderWidth != 0 && viewHolder.text.getWidth() > colHeaderWidth) colHeaderWidth = viewHolder.text.getWidth();
     }
 
     @Override

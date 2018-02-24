@@ -123,19 +123,23 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
      */
     private void CreateTable(List<String> rowNames, List<String> colNames) {
 
-        // assuming that parameters have already been qualified for substituting their corresponding variables
-        this.rowNames = rowNames;
-        this.colNames = colNames;
+        // properly resetting following variables
+        if (this.rowNames != null) this.rowNames.clear();
+        else this.rowNames = new ArrayList<>();
+        if (this.colNames != null) this.colNames.clear();
+        else this.colNames = new ArrayList<>();
+        if (this.values != null) this.values.clear();
+        else this.values = new ArrayList<>();
 
-        // properly resetting the values -variable
-        if (values != null) values.clear();
-        else values = new ArrayList<>();
+        // adding provided data to the rowNames and colNames variables
+        this.rowNames.addAll(rowNames);
+        this.colNames.addAll(colNames);
 
         // for loop within a for loop in order to (re)initialize each cell with a default (0) value
         for (int i = 0; i < rowNames.size(); i++) {
             List<Integer> row = new ArrayList<>();
             for (int j = 0; j < colNames.size(); j++) row.add(0);
-            values.add(row);
+            this.values.add(row);
         }
         Refresh();
     }

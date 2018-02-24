@@ -245,9 +245,11 @@ public class TableLayoutFragment extends Fragment {
     // TODO: Implement better sum calculation!
     private void calculateSums() {
 
-        // if any of the sum-lists are still null, then that will finally be taken care of here
-        if (rowSums == null) rowSums = new ArrayList<>();
-        if (colSums == null) colSums = new ArrayList<>();
+        // properly resetting following variables
+        if (rowSums != null) rowSums.clear();
+        else rowSums = new ArrayList<>();
+        if (colSums != null) colSums.clear();
+        else colSums = new ArrayList<>();
 
         for (List<Integer> cellValues : values) rowSums.add(0);
 
@@ -264,10 +266,18 @@ public class TableLayoutFragment extends Fragment {
                                       List<String> colNames,
                                       List<List<Integer>> values) {
 
-        // changing the data sets with updated information
-        this.rowNames = rowNames;
-        this.colNames = colNames;
-        this.values = values;
+        // properly resetting following variables
+        if (this.rowNames != null) this.rowNames.clear();
+        else this.rowNames = new ArrayList<>();
+        if (this.colNames != null) this.colNames.clear();
+        else this.colNames = new ArrayList<>();
+        if (this.values != null) this.values.clear();
+        else this.values = new ArrayList<>();
+
+        // adding provided data to the reset variables
+        this.rowNames.addAll(rowNames);
+        this.colNames.addAll(colNames);
+        this.values.addAll(values);
         calculateSums();
 
         // notifying all adapters that the data set has changed
@@ -278,7 +288,7 @@ public class TableLayoutFragment extends Fragment {
         rowSumAdapter.notifyDataSetChanged();
 
         // toggle table visibility depending on the state of the data set (empty or not empty)
-        if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) changeTableVisibility(false);
+        if (this.rowNames.isEmpty() || this.colNames.isEmpty() || this.values.isEmpty()) changeTableVisibility(false);
         else changeTableVisibility(true);
 
     }

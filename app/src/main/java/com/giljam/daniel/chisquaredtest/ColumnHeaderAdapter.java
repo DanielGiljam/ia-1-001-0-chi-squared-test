@@ -19,7 +19,7 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
         public ViewHolder(View itemView) {
             super(itemView);
             text = itemView.findViewById(R.id.col_header_item_text);
-            text.post(new Runnable() {
+            /*text.post(new Runnable() {
                 @Override
                 public void run() {
                     width = text.getWidth();
@@ -27,27 +27,27 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
                     System.out.println("[DEBUG]: (from post) colHeader " + debugIterator + " text dimensions " + width + ", " + height);
                     debugIterator++;
                 }
-            });
+            });*/
         }
     }
 
     private Context context;
     private List<String> colHeaders;
 
-    private int width = 0;
+    /*private int width = 0;
     private int height = 0;
 
     private boolean adaptWidth = false;
     private boolean adaptHeight = false;
 
-    private int debugIterator = 0;
+    private int debugIterator = 0;*/
 
     public ColumnHeaderAdapter(Context context, List<String> colHeaders) {
         this.context = context;
         this.colHeaders = colHeaders;
     }
 
-    public int getWidth() {
+    /*public int getWidth() {
         return width;
     }
 
@@ -69,7 +69,7 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
     public void resetHeight() {
         adaptHeight = false;
         height = 0;
-    }
+    }*/
 
     private Context getContext() {
         return context;
@@ -86,8 +86,8 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
     @Override
     public void onBindViewHolder(ColumnHeaderAdapter.ViewHolder viewHolder, int position) {
         viewHolder.text.setText(colHeaders.get(position));
-        if (adaptWidth) viewHolder.text.setWidth(width);
-        if (adaptHeight) viewHolder.text.setHeight(height);
+        /*if (adaptWidth) viewHolder.text.setWidth(width);
+        if (adaptHeight) viewHolder.text.setHeight(height);*/
     }
 
     @Override

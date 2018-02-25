@@ -4,12 +4,12 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -117,9 +117,10 @@ public class TableLayoutFragment extends Fragment {
     private RowSumAdapter rowSumAdapter;
 
     /**
-     * Responsible for timing the distribution of table cell dimensions to the different parts of the table.
+     * Responsible for timing the table cell dimension distribution.
      */
-    private boolean listeningForTableLayout = false;
+    @Deprecated
+    private boolean tableCellDimensionDistributionIsArmed = false;
 
     /*The fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -219,53 +220,6 @@ public class TableLayoutFragment extends Fragment {
 
         // if the variables – that store this fragment's copy of the table data – are empty, then table won't be shown
         if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) changeTableVisibility(false);
-
-        // adding some table layout measurement logic into the layout queue
-        rootLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                // getting the cell button dimensions
-                int cellButtonWidth = rowAdapter.getCellButtonWidth();
-                int cellButtonHeight = rowAdapter.getCellButtonHeight();
-
-                System.out.println("[DEBUG]: (from post) fetched cellButton dimensions: " + cellButtonWidth + ", " + cellButtonHeight);
-
-                // getting the relevant header dimensions
-                int colHeaderWidth = colHeaderAdapter.getWidth();
-                int rowHeaderHeight = rowHeaderAdapter.getHeight();
-
-                System.out.println("[DEBUG]: (from post) fetched colHeader width: " + colHeaderWidth + ", fetched rowHeader height: " + rowHeaderHeight);
-
-                // checking whether the button's width will adapt to the header's width or vice versa
-                if (colHeaderWidth > cellButtonWidth) {
-                    System.out.println("[DEBUG]: (from post) colHeaderWidth won!");
-                    rowAdapter.setCellButtonWidth(true, colHeaderWidth);
-                    colSumAdapter.setWidth(true, colHeaderWidth);
-                } else {
-                    System.out.println("[DEBUG]: (from post) cellButtonWidth won!");
-                    colHeaderAdapter.setWidth(true, cellButtonWidth);
-                    colSumAdapter.setWidth(true, cellButtonWidth);
-                }
-
-                // checking whether the button's height will adapt to the header's height or vice versa
-                if (rowHeaderHeight > cellButtonHeight) {
-                    System.out.println("[DEBUG]: (from post) rowHeaderHeight won!");
-                    rowAdapter.setCellButtonHeight(true, rowHeaderHeight);
-                    rowSumAdapter.setHeight(true, rowHeaderHeight);
-                } else {
-                    System.out.println("[DEBUG]: (from post) cellButtonHeight won!");
-                    rowHeaderAdapter.setHeight(true, cellButtonHeight);
-                    rowSumAdapter.setHeight(true, cellButtonHeight);
-                }
-
-                // notifying all adapters that the data set has changed
-                colHeaderAdapter.notifyDataSetChanged();
-                rowHeaderAdapter.notifyDataSetChanged();
-                rowAdapter.notifyDataSetChanged();
-                colSumAdapter.notifyDataSetChanged();
-                rowSumAdapter.notifyDataSetChanged();
-            }
-        });
         
         return rootLayout;
     }
@@ -294,77 +248,6 @@ public class TableLayoutFragment extends Fragment {
     }
 
     /**
-     * Method that activates a rig that at the right moment
-     * performs a distribution of dynamically determined table cell dimension values.
-     * The rig resets and "arms" itself when the distribution is finished,
-     * allowing for it to be activated again. The method also has built-in functionality for "dodging"
-     * overlapping activations.
-     */
-    @Deprecated
-    private void distributeTableCellDimensions() {
-        if (!listeningForTableLayout) {
-
-            // by setting this bool to true, the table cell distribution mechanisms is marked as activated
-            listeningForTableLayout = true;
-
-            // this listener (attached to the tableLayout RecyclerView) makes sure that
-            // the distribution of cell dimensions happens at the right moment, when the information and
-            // the recipients (the adapters) are available
-            tableLayout.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
-                @Override
-                public void onChildViewAttachedToWindow(View view) {
-
-                    // getting the cell button dimensions
-                    int cellButtonWidth = rowAdapter.getCellButtonWidth();
-                    int cellButtonHeight = rowAdapter.getCellButtonHeight();
-
-                    System.out.println("[DEBUG]: fetched cellButton dimensions: " + cellButtonWidth + ", " + cellButtonHeight);
-
-                    // getting the relevant header dimensions
-                    int colHeaderWidth = colHeaderAdapter.getWidth();
-                    int rowHeaderHeight = rowHeaderAdapter.getHeight();
-
-                    System.out.println("[DEBUG]: fetched colHeader width: " + colHeaderWidth + ", fetched rowHeader height: " + rowHeaderHeight);
-
-                    // checking whether the button's width will adapt to the header's width or vice versa
-                    if (colHeaderWidth > cellButtonWidth) {
-                        System.out.println("[DEBUG]: colHeaderWidth won!");
-                        rowAdapter.setCellButtonWidth(true, colHeaderWidth);
-                        colSumAdapter.setWidth(true, colHeaderWidth);
-                    } else {
-                        System.out.println("[DEBUG]: cellButtonWidth won!");
-                        colHeaderAdapter.setWidth(true, cellButtonWidth);
-                        colSumAdapter.setWidth(true, cellButtonWidth);
-                    }
-
-                    // checking whether the button's height will adapt to the header's height or vice versa
-                    if (rowHeaderHeight > cellButtonHeight) {
-                        System.out.println("[DEBUG]: rowHeaderHeight won!");
-                        rowAdapter.setCellButtonHeight(true, rowHeaderHeight);
-                        rowSumAdapter.setHeight(true, rowHeaderHeight);
-                    } else {
-                        System.out.println("[DEBUG]: cellButtonHeight won!");
-                        rowHeaderAdapter.setHeight(true, cellButtonHeight);
-                        rowSumAdapter.setHeight(true, cellButtonHeight);
-                    }
-
-                    // the listener attached to the RecyclerView is dumped as the distribution task is finished
-                    tableLayout.clearOnChildAttachStateChangeListeners();
-
-                    // the table cell dimension distribution mechanism is armed again (to allow being activated again)
-                    // by setting the dedicated state-communicating bool to false
-                    listeningForTableLayout = false;
-                }
-
-                @Override
-                public void onChildViewDetachedFromWindow(View view) {
-
-                }
-            });
-        }
-    }
-
-    /**
      * Function that populates the {@link TableLayoutFragment#colSums} and {@link TableLayoutFragment#rowSums} {@link List}s
      * with suitable values calculated based on the {@link TableLayoutFragment#values} variable. Consequentially a pre-condition for
      * this function to work, is that the {@link TableLayoutFragment#values} variable already is populated with suitable data.
@@ -383,6 +266,84 @@ public class TableLayoutFragment extends Fragment {
         for (List<Integer> cellValues : values) rowSums.add(0);
 
         for (int columnValue : values.get(0)) colSums.add(0);
+    }
+
+    /**
+     * For, outside of this fragment, checking whether
+     * the table cell dimension distribution mechanism is armed or not.
+     * @return True if the mechanism is armed, false if its not.
+     */
+    @Deprecated
+    public boolean getTableCellDimensionDistributionIsArmed() {
+        return tableCellDimensionDistributionIsArmed;
+    }
+
+    /**
+     * Method that activates a rig that at the right moment
+     * performs a distribution of dynamically determined table cell dimension values.
+     * The rig resets and "arms" itself when the distribution is finished,
+     * allowing for it to be activated again. The method also has built-in functionality for "dodging"
+     * overlapping activations.
+     */
+    @Deprecated
+    public void distributeTableCellDimensions() {
+
+        RecyclerView aRow = tableLayout.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.row_recycler_view);
+        Button aCellButton = aRow.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.cell_button);
+
+        // getting the cell button dimensions
+        int cellButtonWidth = aCellButton.getWidth();
+        int cellButtonHeight = aCellButton.getHeight();
+
+        System.out.println("[DEBUG]: (from MainActivity's onPostResume) fetched cellButton dimensions: " + cellButtonWidth + ", " + cellButtonHeight);
+
+        // getting the relevant header dimensions
+        int colHeaderWidth = 0;
+        int rowHeaderHeight = 0;
+
+        for (int i = 0; i < colNames.size(); i++) {
+            TextView colHeaderText = colHeaders.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.col_header_item_text);
+            if (colHeaderText.getWidth() > colHeaderWidth) colHeaderWidth = colHeaderText.getWidth();
+        }
+
+        for (int i = 0; i < rowNames.size(); i++) {
+            TextView rowHeaderText = rowHeaders.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.row_header_item_text);
+            if (rowHeaderText.getWidth() > rowHeaderHeight) rowHeaderHeight = rowHeaderText.getWidth();
+        }
+
+        System.out.println("[DEBUG]: (from MainActivity's onPostResume) fetched colHeader width: " + colHeaderWidth + ", fetched rowHeader height: " + rowHeaderHeight);
+
+        // checking whether the button's width will adapt to the header's width or vice versa
+        if (colHeaderWidth > cellButtonWidth) {
+            System.out.println("[DEBUG]: (from MainActivity's onPostResume) colHeaderWidth won!");
+            // rowAdapter.setCellButtonWidth(true, colHeaderWidth);
+            // colSumAdapter.setWidth(true, colHeaderWidth);
+        } else {
+            System.out.println("[DEBUG]: (from MainActivity's onPostResume) cellButtonWidth won!");
+            // colHeaderAdapter.setWidth(true, cellButtonWidth);
+            // colSumAdapter.setWidth(true, cellButtonWidth);
+        }
+
+        // checking whether the button's height will adapt to the header's height or vice versa
+        if (rowHeaderHeight > cellButtonHeight) {
+            System.out.println("[DEBUG]: (from MainActivity's onPostResume) rowHeaderHeight won!");
+            // rowAdapter.setCellButtonHeight(true, rowHeaderHeight);
+            // rowSumAdapter.setHeight(true, rowHeaderHeight);
+        } else {
+            System.out.println("[DEBUG]: (from MainActivity's onPostResume) cellButtonHeight won!");
+            // rowHeaderAdapter.setHeight(true, cellButtonHeight);
+            // rowSumAdapter.setHeight(true, cellButtonHeight);
+        }
+
+        // check off all involved View's as invalid to have them redrawn with the distributed dimensions
+        colHeaders.invalidate();
+        rowHeaders.invalidate();
+        tableLayout.invalidate();
+        colSumRow.invalidate();
+        rowSumCol.invalidate();
+
+        // the table cell dimension distribution mechanism is reloaded again (to allow being armed again)
+        tableCellDimensionDistributionIsArmed = false;
     }
 
     /**
@@ -415,6 +376,9 @@ public class TableLayoutFragment extends Fragment {
         rowAdapter.notifyDataSetChanged();
         colSumAdapter.notifyDataSetChanged();
         rowSumAdapter.notifyDataSetChanged();
+
+        // table cell dimension distribution is armed
+        tableCellDimensionDistributionIsArmed = true;
 
         // toggle table visibility depending on the state of the data set (empty or not empty)
         if (this.rowNames.isEmpty() || this.colNames.isEmpty() || this.values.isEmpty()) changeTableVisibility(false);

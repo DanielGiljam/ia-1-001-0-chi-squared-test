@@ -18,7 +18,7 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
         public ViewHolder(View itemView) {
             super(itemView);
             text = itemView.findViewById(R.id.row_sum_item_text);
-            text.post(new Runnable() {
+            /*text.post(new Runnable() {
                 @Override
                 public void run() {
                     width = text.getWidth();
@@ -26,27 +26,27 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
                     System.out.println("[DEBUG]: (from post) colSum " + debugIterator + " text dimensions " + width + ", " + height);
                     debugIterator++;
                 }
-            });
+            });*/
         }
     }
 
     private Context context;
     private List<Integer> rowSums;
 
-    private int width = 0;
+    /*private int width = 0;
     private int height = 0;
 
     private boolean adaptWidth = false;
     private boolean adaptHeight = false;
 
-    private int debugIterator = 0;
+    private int debugIterator = 0;*/
 
     public RowSumAdapter(Context context, List<Integer> rowSums) {
         this.context = context;
         this.rowSums = rowSums;
     }
 
-    public void setWidth(boolean adapt, int width) {
+    /*public void setWidth(boolean adapt, int width) {
         adaptWidth = adapt;
         this.width = width;
     }
@@ -64,7 +64,7 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
     public void resetHeight() {
         adaptHeight = false;
         height = 0;
-    }
+    }*/
 
     private Context getContext() {
         return context;
@@ -81,8 +81,8 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
     @Override
     public void onBindViewHolder(RowSumAdapter.ViewHolder viewHolder, int position) {
         viewHolder.text.setText(getContext().getString(R.string.sum_item_text, rowSums.get(position)));
-        if (adaptWidth) viewHolder.text.setWidth(width);
-        if (adaptHeight) viewHolder.text.setHeight(height);
+        /*if (adaptWidth) viewHolder.text.setWidth(width);
+        if (adaptHeight) viewHolder.text.setHeight(height);*/
     }
 
     @Override

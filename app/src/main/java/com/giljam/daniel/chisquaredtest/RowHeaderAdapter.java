@@ -18,7 +18,7 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
         public ViewHolder(View itemView) {
             super(itemView);
             text = itemView.findViewById(R.id.row_header_item_text);
-            text.post(new Runnable() {
+            /*text.post(new Runnable() {
                 @Override
                 public void run() {
                     width = text.getWidth();
@@ -26,27 +26,27 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
                     System.out.println("[DEBUG]: (from post) rowHeader " + debugIterator + " text dimensions " + width + ", " + height);
                     debugIterator++;
                 }
-            });
+            });*/
         }
     }
 
     private Context context;
     private List<String> rowHeaders;
 
-    private int width = 0;
+    /*private int width = 0;
     private int height = 0;
 
     private boolean adaptWidth = false;
     private boolean adaptHeight = false;
 
-    private int debugIterator = 0;
+    private int debugIterator = 0;*/
 
     public RowHeaderAdapter(Context context, List<String> rowHeaders) {
         this.context = context;
         this.rowHeaders = rowHeaders;
     }
 
-    public int getHeight() {
+    /*public int getHeight() {
         return height;
     }
 
@@ -68,7 +68,7 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
     public void resetHeight() {
         adaptHeight = false;
         height = 0;
-    }
+    }*/
 
     private Context getContext() {
         return context;
@@ -85,8 +85,8 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
     @Override
     public void onBindViewHolder(RowHeaderAdapter.ViewHolder viewHolder, int position) {
         viewHolder.text.setText(rowHeaders.get(position));
-        if (adaptWidth) viewHolder.text.setWidth(width);
-        if (adaptHeight) viewHolder.text.setHeight(height);
+        /*if (adaptWidth) viewHolder.text.setWidth(width);
+        if (adaptHeight) viewHolder.text.setHeight(height);*/
     }
 
     @Override

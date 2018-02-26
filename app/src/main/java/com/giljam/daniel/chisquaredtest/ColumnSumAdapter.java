@@ -23,7 +23,6 @@ public class ColumnSumAdapter extends RecyclerView.Adapter<ColumnSumAdapter.View
                 public void run() {
                     width = text.getWidth();
                     height = text.getHeight();
-                    System.out.println("[DEBUG]: (from post) rowSum " + debugIterator + " text dimensions " + width + ", " + height);
                     debugIterator++;
                 }
             });*/

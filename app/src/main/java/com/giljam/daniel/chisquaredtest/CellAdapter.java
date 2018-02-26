@@ -24,7 +24,6 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
                 public void run() {
                     if (buttonWidth == 0) buttonWidth = button.getWidth();
                     if (buttonHeight == 0) buttonHeight = button.getHeight();
-                    System.out.println("[DEBUG]: (from post) cellButton " + debugIterator + " dimensions " + buttonWidth + ", " + buttonHeight);
                     debugIterator++;
                 }
             });*/

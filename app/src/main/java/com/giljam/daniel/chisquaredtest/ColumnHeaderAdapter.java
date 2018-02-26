@@ -1,7 +1,6 @@
 package com.giljam.daniel.chisquaredtest;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,6 @@ public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapte
                 public void run() {
                     width = text.getWidth();
                     height = text.getHeight();
-                    System.out.println("[DEBUG]: (from post) colHeader " + debugIterator + " text dimensions " + width + ", " + height);
                     debugIterator++;
                 }
             });*/

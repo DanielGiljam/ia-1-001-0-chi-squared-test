@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -197,6 +198,16 @@ public class TableLayoutFragment extends Fragment {
         rowSumCol = rootLayout.findViewById(R.id.row_sums);
         noTableText = rootLayout.findViewById(R.id.no_table_text);
 
+        // create divider items
+        DividerItemDecoration whiteVertical = new DividerItemDecoration(getContext(), 0);
+        DividerItemDecoration whiteHorizontal = new DividerItemDecoration(getContext(), 1);
+
+        // set up dividers
+        colHeaders.addItemDecoration(whiteVertical);
+        rowHeaders.addItemDecoration(whiteHorizontal);
+        colSumRow.addItemDecoration(whiteVertical);
+        rowSumCol.addItemDecoration(whiteHorizontal);
+
         // initialize the adapters of the RecyclerViews
         colHeaderAdapter = new ColumnHeaderAdapter(getContext(), colNames);
         rowHeaderAdapter = new RowHeaderAdapter(getContext(), rowNames);
@@ -295,8 +306,6 @@ public class TableLayoutFragment extends Fragment {
         int cellButtonWidth = aCellButton.getWidth();
         int cellButtonHeight = aCellButton.getHeight();
 
-        System.out.println("[DEBUG]: (from MainActivity's onPostResume) fetched cellButton dimensions: " + cellButtonWidth + ", " + cellButtonHeight);
-
         // getting the relevant header dimensions
         int colHeaderWidth = 0;
         int rowHeaderHeight = 0;
@@ -311,29 +320,23 @@ public class TableLayoutFragment extends Fragment {
             if (rowHeaderText.getWidth() > rowHeaderHeight) rowHeaderHeight = rowHeaderText.getWidth();
         }
 
-        System.out.println("[DEBUG]: (from MainActivity's onPostResume) fetched colHeader width: " + colHeaderWidth + ", fetched rowHeader height: " + rowHeaderHeight);
-
         // checking whether the button's width will adapt to the header's width or vice versa
-        if (colHeaderWidth > cellButtonWidth) {
-            System.out.println("[DEBUG]: (from MainActivity's onPostResume) colHeaderWidth won!");
+        // if (colHeaderWidth > cellButtonWidth) {
             // rowAdapter.setCellButtonWidth(true, colHeaderWidth);
             // colSumAdapter.setWidth(true, colHeaderWidth);
-        } else {
-            System.out.println("[DEBUG]: (from MainActivity's onPostResume) cellButtonWidth won!");
+        // } else {
             // colHeaderAdapter.setWidth(true, cellButtonWidth);
             // colSumAdapter.setWidth(true, cellButtonWidth);
-        }
+        // }
 
         // checking whether the button's height will adapt to the header's height or vice versa
-        if (rowHeaderHeight > cellButtonHeight) {
-            System.out.println("[DEBUG]: (from MainActivity's onPostResume) rowHeaderHeight won!");
+        // if (rowHeaderHeight > cellButtonHeight) {
             // rowAdapter.setCellButtonHeight(true, rowHeaderHeight);
             // rowSumAdapter.setHeight(true, rowHeaderHeight);
-        } else {
-            System.out.println("[DEBUG]: (from MainActivity's onPostResume) cellButtonHeight won!");
+        // } else {
             // rowHeaderAdapter.setHeight(true, cellButtonHeight);
             // rowSumAdapter.setHeight(true, cellButtonHeight);
-        }
+        // }
 
         // check off all involved View's as invalid to have them redrawn with the distributed dimensions
         colHeaders.invalidate();

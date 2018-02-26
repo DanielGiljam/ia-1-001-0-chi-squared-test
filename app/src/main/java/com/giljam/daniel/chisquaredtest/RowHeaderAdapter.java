@@ -23,7 +23,6 @@ public class RowHeaderAdapter extends RecyclerView.Adapter<RowHeaderAdapter.View
                 public void run() {
                     width = text.getWidth();
                     height = text.getHeight();
-                    System.out.println("[DEBUG]: (from post) rowHeader " + debugIterator + " text dimensions " + width + ", " + height);
                     debugIterator++;
                 }
             });*/

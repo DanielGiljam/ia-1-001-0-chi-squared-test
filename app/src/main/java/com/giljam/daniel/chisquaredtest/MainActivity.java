@@ -78,7 +78,30 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
         // code comes here...
 
         // other
-        CreateMinimumTable("Row 1", "Row 2", "Column 1", "Column 2");
+        // CreateMinimumTable("Row 1", "Row 2", "Column 1", "Column 2");
+        List<String> exampleRowNames = new ArrayList<>();
+        exampleRowNames.add("Row 1");
+        exampleRowNames.add("Row 2");
+        exampleRowNames.add("Row 3");
+        exampleRowNames.add("Row 4");
+        exampleRowNames.add("Row 5");
+        exampleRowNames.add("Row 6");
+        exampleRowNames.add("Row 7");
+        exampleRowNames.add("Row 8");
+        exampleRowNames.add("Row 9");
+        exampleRowNames.add("Row 10");
+        exampleRowNames.add("Row 11");
+        exampleRowNames.add("Row 12");
+        List<String> exampleColNames = new ArrayList<>();
+        exampleColNames.add("Column 1");
+        exampleColNames.add("Column 2");
+        exampleColNames.add("Column 3");
+        exampleColNames.add("Column 4");
+        exampleColNames.add("Column 5");
+        exampleColNames.add("Column 6");
+        exampleColNames.add("Column 7");
+        exampleColNames.add("Column 8");
+        CreateTable(exampleRowNames, exampleColNames);
     }
 
     /**

@@ -12,19 +12,15 @@
         android:id="@+id/col_headers"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/table_layout"
-        app:layout_constraintEnd_toStartOf="@id/row_sums"
-        app:layout_constraintStart_toEndOf="@id/row_headers"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_weight="0" />
+        app:layout_constraintEnd_toStartOf="@id/row_sums"
+        app:layout_constraintStart_toEndOf="@id/row_headers" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/row_headers"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/col_sums"
-        app:layout_constraintEnd_toStartOf="@id/table_layout"
-        app:layout_constraintHorizontal_weight="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/col_headers" />
 
@@ -34,10 +30,8 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/col_sums"
         app:layout_constraintEnd_toStartOf="@id/row_sums"
-        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/row_headers"
-        app:layout_constraintTop_toBottomOf="@id/col_headers"
-        app:layout_constraintVertical_weight="1" />
+        app:layout_constraintTop_toBottomOf="@id/col_headers" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/row_sums"
@@ -45,11 +39,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/col_sums"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="0"
-        app:layout_constraintStart_toEndOf="@id/table_layout"
-        app:layout_constraintTop_toBottomOf="@id/col_headers">
-
-    </android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@id/col_headers" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/col_sums"
@@ -57,9 +47,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/row_sums"
-        app:layout_constraintStart_toEndOf="@id/row_headers"
-        app:layout_constraintTop_toBottomOf="@id/table_layout"
-        app:layout_constraintVertical_weight="0" />
+        app:layout_constraintStart_toEndOf="@id/row_headers" />
 
     <TextView
         android:id="@+id/no_table_text"

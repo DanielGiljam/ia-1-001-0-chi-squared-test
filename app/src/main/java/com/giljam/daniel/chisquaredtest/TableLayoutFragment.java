@@ -377,9 +377,6 @@ public class TableLayoutFragment extends Fragment {
         colSumAdapter.notifyDataSetChanged();
         rowSumAdapter.notifyDataSetChanged();
 
-        // table cell dimension distribution is armed
-        tableCellDimensionDistributionIsArmed = true;
-
         // toggle table visibility depending on the state of the data set (empty or not empty)
         if (this.rowNames.isEmpty() || this.colNames.isEmpty() || this.values.isEmpty()) changeTableVisibility(false);
         else changeTableVisibility(true);

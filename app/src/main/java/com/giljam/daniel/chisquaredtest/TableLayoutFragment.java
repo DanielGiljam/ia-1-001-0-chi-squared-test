@@ -198,15 +198,15 @@ public class TableLayoutFragment extends Fragment {
         rowSumCol = rootLayout.findViewById(R.id.row_sums);
         noTableText = rootLayout.findViewById(R.id.no_table_text);
 
-        // create divider items
-        CustomDividerItemDecoration whiteVertical = new CustomDividerItemDecoration(getContext(), 0);
-        CustomDividerItemDecoration whiteHorizontal = new CustomDividerItemDecoration(getContext(), 1);
+        // create divider item decorations
+        CustomDividerItemDecoration verticalDivider = new CustomDividerItemDecoration(getContext(), 0);
+        CustomDividerItemDecoration horizontalDivider = new CustomDividerItemDecoration(getContext(), 1);
 
         // set up dividers
-        colHeaders.addItemDecoration(whiteVertical);
-        rowHeaders.addItemDecoration(whiteHorizontal);
-        colSumRow.addItemDecoration(whiteVertical);
-        rowSumCol.addItemDecoration(whiteHorizontal);
+        colHeaders.addItemDecoration(verticalDivider);
+        rowHeaders.addItemDecoration(horizontalDivider);
+        colSumRow.addItemDecoration(verticalDivider);
+        rowSumCol.addItemDecoration(horizontalDivider);
 
         // initialize the adapters of the RecyclerViews
         colHeaderAdapter = new ColumnHeaderAdapter(getContext(), colNames);

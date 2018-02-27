@@ -12,7 +12,6 @@
         android:id="@+id/col_headers"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toStartOf="@id/row_sums"
         app:layout_constraintStart_toEndOf="@id/row_headers"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,7 +20,6 @@
         android:id="@+id/row_headers"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@id/col_sums"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/col_headers" />
@@ -39,7 +37,6 @@
         android:id="@+id/row_sums"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@id/col_sums"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/col_headers" />
@@ -48,7 +45,6 @@
         android:id="@+id/col_sums"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/row_sums"
         app:layout_constraintStart_toEndOf="@id/row_headers" />

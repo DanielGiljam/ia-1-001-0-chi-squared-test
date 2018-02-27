@@ -199,8 +199,8 @@ public class TableLayoutFragment extends Fragment {
         noTableText = rootLayout.findViewById(R.id.no_table_text);
 
         // create divider items
-        DividerItemDecoration whiteVertical = new DividerItemDecoration(getContext(), 0);
-        DividerItemDecoration whiteHorizontal = new DividerItemDecoration(getContext(), 1);
+        CustomDividerItemDecoration whiteVertical = new CustomDividerItemDecoration(getContext(), 0);
+        CustomDividerItemDecoration whiteHorizontal = new CustomDividerItemDecoration(getContext(), 1);
 
         // set up dividers
         colHeaders.addItemDecoration(whiteVertical);

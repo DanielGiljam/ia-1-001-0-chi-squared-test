@@ -75,7 +75,12 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
         CellAdapter cellAdapter = new CellAdapter(getContext(), values.get(position));
         cellAdapters.add(position, cellAdapter);
         rows.add(position, viewHolder.row);
-        rows.get(position).setLayoutManager(new LinearLayoutManager(getContext(), 0, false));
+        rows.get(position).setLayoutManager(new LinearLayoutManager(getContext(), 0, false) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+        });
         rows.get(position).setAdapter(cellAdapters.get(position));
     }
 

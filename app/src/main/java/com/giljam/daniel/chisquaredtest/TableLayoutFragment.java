@@ -4,7 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,6 +56,11 @@ public class TableLayoutFragment extends Fragment {
      * Variable for the {@link View} that is the root layout of this fragment.
      */
     private View rootLayout;
+
+    /**
+     * Variable for the {@link ConstraintLayout} that is a significant "parent" layout in this fragment.
+     */
+    private ConstraintLayout constraintRootLayout;
 
     /**
      * Variable for the {@link RecyclerView} displaying the column names.
@@ -191,12 +196,16 @@ public class TableLayoutFragment extends Fragment {
         rootLayout = inflater.inflate(R.layout.fragment_table_layout, container, false);
 
         // assigning "bridges" to corresponding variable for each significant view in this fragments layout
+        constraintRootLayout = rootLayout.findViewById(R.id.table_layout_fragment_root_layout);
         colHeaders = rootLayout.findViewById(R.id.col_headers);
         rowHeaders = rootLayout.findViewById(R.id.row_headers);
         tableLayout = rootLayout.findViewById(R.id.table_layout);
         colSumRow = rootLayout.findViewById(R.id.col_sums);
         rowSumCol = rootLayout.findViewById(R.id.row_sums);
         noTableText = rootLayout.findViewById(R.id.no_table_text);
+
+        // Determine height of table
+        CalculateTableDimensions();
 
         // create divider item decorations
         CustomDividerItemDecoration verticalDivider = new CustomDividerItemDecoration(getContext(), 0);
@@ -216,11 +225,38 @@ public class TableLayoutFragment extends Fragment {
         rowSumAdapter = new RowSumAdapter(getContext(), rowSums);
 
         // set layout managers for the RecyclerViews
-        colHeaders.setLayoutManager(new LinearLayoutManager(getContext(), 0, false));
-        rowHeaders.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
-        tableLayout.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
-        colSumRow.setLayoutManager(new LinearLayoutManager(getContext(), 0, false));
-        rowSumCol.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
+        // NOTE! Scrolling being disabled in these layout managers is a part of the explicit choice to not support any scrolling in this table layout,
+        // as this was way too complicated to achieve when using RecyclerViews as the layout's foundation.
+        colHeaders.setLayoutManager(new LinearLayoutManager(getContext(), 0, false) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+        });
+        rowHeaders.setLayoutManager(new LinearLayoutManager(getContext(), 1, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        tableLayout.setLayoutManager(new LinearLayoutManager(getContext(), 1, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        colSumRow.setLayoutManager(new LinearLayoutManager(getContext(), 0, false) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+        });
+        rowSumCol.setLayoutManager(new LinearLayoutManager(getContext(), 1, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
 
         // set adapters for corresponding RecyclerViews
         colHeaders.setAdapter(colHeaderAdapter);
@@ -233,6 +269,29 @@ public class TableLayoutFragment extends Fragment {
         if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) changeTableVisibility(false);
         
         return rootLayout;
+    }
+
+    private void CalculateTableDimensions() {
+        int width = Math.round
+        (
+            (MainActivity.TABLE_WIDTH_OTHER +
+            colNames.size() * MainActivity.TABLE_COLUMN_WIDTH) *
+            ((MainActivity)getActivity()).GetDPMultiplier()
+        );
+        int height = Math.round
+        (
+            (MainActivity.TABLE_HEIGHT_OTHER +
+            rowNames.size() * MainActivity.TABLE_ROW_HEIGHT) *
+            ((MainActivity) getActivity()).GetDPMultiplier()
+        );
+        System.out.println("[DEBUG] constraint root layout min width: " + constraintRootLayout.getMinWidth());
+        System.out.println("[DEBUG] constraint root layout max width: " + constraintRootLayout.getMaxWidth());
+        System.out.println("[DEBUG] constraint root layout min height: " + constraintRootLayout.getMinHeight());
+        System.out.println("[DEBUG] constraint root layout max height: " + constraintRootLayout.getMaxHeight());
+        constraintRootLayout.setMinWidth(width);
+        constraintRootLayout.setMaxWidth(width);
+        constraintRootLayout.setMinHeight(height);
+        constraintRootLayout.setMaxHeight(height);
     }
 
     /**
@@ -372,6 +431,9 @@ public class TableLayoutFragment extends Fragment {
         this.colNames.addAll(colNames);
         this.values.addAll(values);
         calculateSums();
+
+        // determine new height of table
+        CalculateTableDimensions();
 
         // notifying all adapters that the data set has changed
         colHeaderAdapter.notifyDataSetChanged();

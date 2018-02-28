@@ -1,13 +1,44 @@
 package com.giljam.daniel.chisquaredtest;
 
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.view.Display;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements TableLayoutFragment.OnFragmentInteractionListener {
+
+    /**
+     * The width of the border columns in the table layout.
+     * Needed for final view size calculations.
+     * Can always be expected to be constant.
+     */
+    public static final int TABLE_WIDTH_OTHER = 96 + 48;
+
+    /**
+     * The height of the border rows in the table layout.
+     * Needed for final view size calculations.
+     * Can always be expected to be constant.
+     */
+    public static final int TABLE_HEIGHT_OTHER = 32 + 32;
+
+    /**
+     * The width of a column in the table layout.
+     * Needed for final view size calculations.
+     * Can always be expected to be constant.
+     */
+    public static final int TABLE_COLUMN_WIDTH = 96;
+
+    /**
+     * The height of a row in the table layout.
+     * Needed for final view size calculations.
+     * Can always be expected to be constant.
+     */
+    public static final int TABLE_ROW_HEIGHT = 64;
 
     /**
      * This variable is required for performing chi-squared-tests.<br>
@@ -78,30 +109,7 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
         // code comes here...
 
         // other
-        // CreateMinimumTable("Row 1", "Row 2", "Column 1", "Column 2");
-        List<String> exampleRowNames = new ArrayList<>();
-        exampleRowNames.add("Row 1");
-        exampleRowNames.add("Row 2");
-        exampleRowNames.add("Row 3");
-        exampleRowNames.add("Row 4");
-        exampleRowNames.add("Row 5");
-        exampleRowNames.add("Row 6");
-        exampleRowNames.add("Row 7");
-        exampleRowNames.add("Row 8");
-        exampleRowNames.add("Row 9");
-        exampleRowNames.add("Row 10");
-        exampleRowNames.add("Row 11");
-        exampleRowNames.add("Row 12");
-        List<String> exampleColNames = new ArrayList<>();
-        exampleColNames.add("Column 1");
-        exampleColNames.add("Column 2");
-        exampleColNames.add("Column 3");
-        exampleColNames.add("Column 4");
-        exampleColNames.add("Column 5");
-        exampleColNames.add("Column 6");
-        exampleColNames.add("Column 7");
-        exampleColNames.add("Column 8");
-        CreateTable(exampleRowNames, exampleColNames);
+        CreateMinimumTable("Row 1", "Row 2", "Column 1", "Column 2");
     }
 
     /**
@@ -138,6 +146,28 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
     }
 
     /**
+     * Generates a table of provided dimensions with placeholder row and column names. For layout previewing purposes during app development phase.
+     * @param rows How many rows the table will have.
+     * @param columns How many columns the table will have.
+     */
+    private void CreateExampleTable(int rows, int columns) {
+
+        if (rows > 2 && columns > 2) {
+
+            List<String> exampleRowNames = new ArrayList<>();
+            List<String> exampleColNames = new ArrayList<>();
+
+            for (int i = 1; i <= rows; i++)
+                exampleRowNames.add(String.format(Locale.getDefault(),"Row %1$d", i));
+            for (int i = 1; i <= columns; i++)
+                exampleColNames.add(String.format(Locale.getDefault(), "Column %1$d", i));
+
+            CreateTable(exampleRowNames, exampleColNames);
+
+        } else CreateMinimumTable("Row 1", "Row 2", "Column 1", "Column 2");
+    }
+
+    /**
      * Changes theTable into a table with implicit dimensions (implied by the sizes of the lists provided as parameters).<br>
      * It reformats the variables that hold theTable's data (the high-priority variables: rowNames, colNames, values).<br>
      * The subsequently executed Refresh() -method takes care of inflating the new table layout onto the screen.
@@ -165,6 +195,50 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
             this.values.add(row);
         }
         Refresh();
+    }
+
+    public int[] CalculateMaxDisplayableTable() {
+        float[] screenDimensions = GetScreenDimensionsInDP();
+        int rowsThatFit = (int) Math.floor((screenDimensions[1] - TABLE_HEIGHT_OTHER) / TABLE_ROW_HEIGHT);
+        System.out.println("[DEBUG] rows that fit: " + rowsThatFit);
+        int colsThatFit = (int) Math.floor((screenDimensions[0] - TABLE_WIDTH_OTHER) / TABLE_COLUMN_WIDTH);
+        System.out.println("[DEBUG] columns that fit: " + colsThatFit);
+        return new int[] {rowsThatFit, colsThatFit};
+    }
+
+    /**
+     * Fetches the multiplier needed to convert px to dp.
+     *
+     * @return the multiplier as a float.
+     */
+    public float GetDPMultiplier() {
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float dpMultiplier = getResources().getDisplayMetrics().density;
+        System.out.println("[DEBUG] screen density: " + dpMultiplier);
+
+        return dpMultiplier;
+    }
+
+    /**
+     * Fetches the dimensions of the available viewport.
+     * @return two floats packed in an array, representing x and y dimensions in dp.
+     */
+    private float[] GetScreenDimensionsInDP() {
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = getResources().getDisplayMetrics().density;
+        System.out.println("[DEBUG] screen density: " + density);
+        float dpHeight = outMetrics.heightPixels / density;
+        System.out.println("[DEBUG] screen height: " + outMetrics.heightPixels);
+        float dpWidth = outMetrics.widthPixels / density;
+        System.out.println("[DEBUG] screen width: " + outMetrics.widthPixels);
+
+        return new float[] {dpWidth, dpHeight};
     }
 
     /**

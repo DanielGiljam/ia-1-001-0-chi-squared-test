@@ -17,14 +17,14 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
      * Needed for final view size calculations.
      * Can always be expected to be constant.
      */
-    public static final int TABLE_WIDTH_OTHER = 96 + 48;
+    public static final int TABLE_WIDTH_OTHER = 96 + 48 + 16 + 16;
 
     /**
      * The height of the border rows in the table layout.
      * Needed for final view size calculations.
      * Can always be expected to be constant.
      */
-    public static final int TABLE_HEIGHT_OTHER = 32 + 32;
+    public static final int TABLE_HEIGHT_OTHER = 32 + 32 + 16 + 16;
 
     /**
      * The width of a column in the table layout.
@@ -200,9 +200,7 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
     public int[] CalculateMaxDisplayableTable() {
         float[] screenDimensions = GetScreenDimensionsInDP();
         int rowsThatFit = (int) Math.floor((screenDimensions[1] - TABLE_HEIGHT_OTHER) / TABLE_ROW_HEIGHT);
-        System.out.println("[DEBUG] rows that fit: " + rowsThatFit);
         int colsThatFit = (int) Math.floor((screenDimensions[0] - TABLE_WIDTH_OTHER) / TABLE_COLUMN_WIDTH);
-        System.out.println("[DEBUG] columns that fit: " + colsThatFit);
         return new int[] {rowsThatFit, colsThatFit};
     }
 
@@ -215,11 +213,7 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
-
-        float dpMultiplier = getResources().getDisplayMetrics().density;
-        System.out.println("[DEBUG] screen density: " + dpMultiplier);
-
-        return dpMultiplier;
+        return getResources().getDisplayMetrics().density;
     }
 
     /**
@@ -232,11 +226,8 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
         display.getMetrics(outMetrics);
 
         float density = getResources().getDisplayMetrics().density;
-        System.out.println("[DEBUG] screen density: " + density);
         float dpHeight = outMetrics.heightPixels / density;
-        System.out.println("[DEBUG] screen height: " + outMetrics.heightPixels);
         float dpWidth = outMetrics.widthPixels / density;
-        System.out.println("[DEBUG] screen width: " + outMetrics.widthPixels);
 
         return new float[] {dpWidth, dpHeight};
     }

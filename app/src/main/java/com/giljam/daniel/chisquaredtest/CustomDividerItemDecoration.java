@@ -13,6 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/*
+ * See the original DividerItemDecoration.java file at https://android.googlesource.com
+ * List of modifications in this modified ("Custom") version of the DividerItemDecoration:
+ * - divider is not drawn on the last item
+ * - added "angle" parameter
+ *   and the drawing of a border on one side
+ *   determined by the "angle" parameter
+ * Modified version made by Daniel Giljam, 2018
+ */
+
 package com.giljam.daniel.chisquaredtest;
 
 import android.content.Context;
@@ -32,13 +43,17 @@ public class CustomDividerItemDecoration extends RecyclerView.ItemDecoration {
     public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
     private Drawable mDivider;
+    private Drawable mBorder;
     private int mOrientation;
+    private int mAngle;
 
-    public CustomDividerItemDecoration(Context context, int orientation) {
+    public CustomDividerItemDecoration(Context context, int orientation, int angle) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
+        mBorder = a.getDrawable(0);
         a.recycle();
         setOrientation(orientation);
+        setAngle(angle);
     }
 
     public void setOrientation(int orientation) {
@@ -46,6 +61,13 @@ public class CustomDividerItemDecoration extends RecyclerView.ItemDecoration {
             throw new IllegalArgumentException("invalid orientation");
         }
         mOrientation = orientation;
+    }
+
+    public void setAngle(int angle) {
+        if (angle != HORIZONTAL_LIST && angle != VERTICAL_LIST) {
+            throw new IllegalArgumentException("invalid angle value");
+        }
+        mAngle = angle;
     }
 
     @Override
@@ -58,34 +80,78 @@ public class CustomDividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     public void drawVertical(Canvas c, RecyclerView parent) {
-        final int left = parent.getPaddingLeft();
-        final int right = parent.getWidth() - parent.getPaddingRight();
+        final int dividerLeft = parent.getPaddingLeft();
+        final int dividerRight = parent.getWidth() - parent.getPaddingRight();
+        /*if (mAngle == HORIZONTAL_LIST) {
+            final int borderLeft1 = parent.getPaddingLeft();
+            final int borderTop1 = parent.getPaddingTop();
+            final int borderRight1 = borderLeft1 + mBorder.getIntrinsicHeight();
+            final int borderBottom1 = parent.getHeight() - parent.getPaddingBottom();
+            mBorder.setBounds(borderLeft1, borderTop1, borderRight1, borderBottom1);
+            mBorder.draw(c);
+        } else {
+            final int borderTop2 = parent.getPaddingTop();
+            final int borderRight2 = parent.getWidth() - parent.getPaddingRight();
+            final int borderBottom2 = parent.getHeight() - parent.getPaddingBottom();
+            final int borderLeft2 = borderRight2 - mBorder.getIntrinsicHeight();
+            mBorder.setBounds(borderLeft2, borderTop2, borderRight2, borderBottom2);
+            mBorder.draw(c);
+        }*/
         final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount - 1; i++) {
+        for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
                     .getLayoutParams();
-            final int top = child.getBottom() + params.bottomMargin +
+            final int dividerBottom = child.getBottom() + params.bottomMargin +
                     Math.round(ViewCompat.getTranslationY(child));
-            final int bottom = top + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top, right, bottom);
+            final int dividerTop = dividerBottom - mDivider.getIntrinsicHeight();
+            mDivider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
             mDivider.draw(c);
+            if (i == 0) {
+                final int firstDividerTop = child.getTop() - params.topMargin -
+                        Math.round(ViewCompat.getTranslationY(child));
+                final int firstDividerBottom = firstDividerTop + mDivider.getIntrinsicHeight();
+                mDivider.setBounds(dividerLeft, firstDividerTop, dividerRight, firstDividerBottom);
+                mDivider.draw(c);
+            }
         }
     }
 
     public void drawHorizontal(Canvas c, RecyclerView parent) {
-        final int top = parent.getPaddingTop();
-        final int bottom = parent.getHeight() - parent.getPaddingBottom();
+        final int dividerTop = parent.getPaddingTop();
+        final int dividerBottom = parent.getHeight() - parent.getPaddingBottom();
+        /*if (mAngle == VERTICAL_LIST) {
+            final int borderTop1 = parent.getPaddingTop();
+            final int borderRight1 = parent.getWidth() - parent.getPaddingRight();
+            final int borderBottom1 = borderTop1 + mBorder.getIntrinsicHeight();
+            final int borderLeft1 = parent.getPaddingLeft();
+            mBorder.setBounds(borderLeft1, borderTop1, borderRight1, borderBottom1);
+            mBorder.draw(c);
+        } else {
+            final int borderRight2 = parent.getWidth() - parent.getPaddingRight();
+            final int borderBottom2 = parent.getHeight() - parent.getPaddingBottom();
+            final int borderLeft2 = parent.getPaddingLeft();
+            final int borderTop2 = borderBottom2 - mBorder.getIntrinsicHeight();
+            mBorder.setBounds(borderLeft2, borderTop2, borderRight2, borderBottom2);
+            mBorder.draw(c);
+        }*/
         final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount - 1; i++) {
+        for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
                     .getLayoutParams();
-            final int left = child.getRight() + params.rightMargin +
+            final int dividerRight = child.getRight() + params.rightMargin +
                     Math.round(ViewCompat.getTranslationX(child));
-            final int right = left + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top, right, bottom);
+            final int dividerLeft = dividerRight - mDivider.getIntrinsicHeight();
+            mDivider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
             mDivider.draw(c);
+            if (i == 0) {
+                final int firstDividerLeft = child.getLeft() - params.leftMargin -
+                        Math.round(ViewCompat.getTranslationX(child));
+                final int firstDividerRight = firstDividerLeft + mDivider.getIntrinsicHeight();
+                mDivider.setBounds(firstDividerLeft, dividerTop, firstDividerRight, dividerBottom);
+                mDivider.draw(c);
+            }
         }
     }
 

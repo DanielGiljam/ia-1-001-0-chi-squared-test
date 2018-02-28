@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -223,15 +224,11 @@ public class TableLayoutFragment extends Fragment {
         // Determine height of table
         CalculateTableDimensions();
 
-        // create divider item decorations
-        CustomDividerItemDecoration verticalDivider = new CustomDividerItemDecoration(getContext(), 0);
-        CustomDividerItemDecoration horizontalDivider = new CustomDividerItemDecoration(getContext(), 1);
-
-        // set up dividers
-        colHeaders.addItemDecoration(verticalDivider);
-        rowHeaders.addItemDecoration(horizontalDivider);
-        colSumRow.addItemDecoration(verticalDivider);
-        rowSumCol.addItemDecoration(horizontalDivider);
+        // set up item decorations
+        colHeaders.addItemDecoration(new CustomDividerItemDecoration(getContext(), 0, 0));
+        rowHeaders.addItemDecoration(new CustomDividerItemDecoration(getContext(), 1, 1));
+        colSumRow.addItemDecoration(new CustomDividerItemDecoration(getContext(), 0, 1));
+        rowSumCol.addItemDecoration(new CustomDividerItemDecoration(getContext(), 1, 0));
 
         // initialize the adapters of the RecyclerViews
         colHeaderAdapter = new ColumnHeaderAdapter(getContext(), colNames);
@@ -312,10 +309,6 @@ public class TableLayoutFragment extends Fragment {
             rowNames.size() * MainActivity.TABLE_ROW_HEIGHT) *
             ((MainActivity) getActivity()).GetDPMultiplier()
         );
-        System.out.println("[DEBUG] constraint root layout min width: " + constraintRootLayout.getMinWidth());
-        System.out.println("[DEBUG] constraint root layout max width: " + constraintRootLayout.getMaxWidth());
-        System.out.println("[DEBUG] constraint root layout min height: " + constraintRootLayout.getMinHeight());
-        System.out.println("[DEBUG] constraint root layout max height: " + constraintRootLayout.getMaxHeight());
         constraintRootLayout.setMinWidth(width);
         constraintRootLayout.setMaxWidth(width);
         constraintRootLayout.setMinHeight(height);

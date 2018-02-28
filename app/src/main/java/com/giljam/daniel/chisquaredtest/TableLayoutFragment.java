@@ -123,6 +123,22 @@ public class TableLayoutFragment extends Fragment {
     private RowSumAdapter rowSumAdapter;
 
     /**
+     * The initial max width of the {@link TableLayoutFragment#constraintRootLayout} is stored here after
+     * {@link TableLayoutFragment#CalculateTableDimensions()} is first run.<br>
+     * In case the table is ever empty, the initial max width is restored, which means the substituting
+     * "table is empty" -message is centered on the screen.
+     */
+    private int initialMaxWidth = 0;
+
+    /**
+     * The initial max height of the {@link TableLayoutFragment#constraintRootLayout} is stored here after
+     * {@link TableLayoutFragment#CalculateTableDimensions()} is first run.<br>
+     * In case the table is ever empty, the initial max height is restored, which means the substituting
+     * "table is empty" -message is centered on the screen.
+     */
+    private int initialMaxHeight = 0;
+
+    /**
      * Responsible for timing the table cell dimension distribution.
      */
     @Deprecated
@@ -272,6 +288,18 @@ public class TableLayoutFragment extends Fragment {
     }
 
     private void CalculateTableDimensions() {
+        if (initialMaxWidth == 0 && initialMaxHeight == 0) {
+            initialMaxWidth = constraintRootLayout.getMaxWidth();
+            initialMaxHeight = constraintRootLayout.getMaxHeight();
+        }
+        if (rowNames.isEmpty() || colNames.isEmpty()) {
+            if (initialMaxWidth == 0 && initialMaxHeight == 0) return;
+            constraintRootLayout.setMinWidth(0);
+            constraintRootLayout.setMaxWidth(initialMaxWidth);
+            constraintRootLayout.setMinHeight(0);
+            constraintRootLayout.setMaxHeight(initialMaxHeight);
+            return;
+        }
         int width = Math.round
         (
             (MainActivity.TABLE_WIDTH_OTHER +

@@ -3,8 +3,11 @@ package com.giljam.daniel.chisquaredtest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // set up action bar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         // initialize high-priority variables
         theTable = null;
         rowNames = null;
@@ -110,6 +117,31 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
 
         // other
         CreateMinimumTable("Row 1", "Row 2", "Column 1", "Column 2");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present
+        getMenuInflater().inflate(R.menu.settings_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        // Course of actions taken is determined based on the id of the action bar item
+        if (id == R.id.set_up) {
+            // Show the set up GUI
+            ShowSetUp();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void ShowSetUp() {
+        SetUpDialog setUp = SetUpDialog.newInstance(rowNames, colNames, values);
+        setUp.show(getSupportFragmentManager(), "dialog");
     }
 
     /**

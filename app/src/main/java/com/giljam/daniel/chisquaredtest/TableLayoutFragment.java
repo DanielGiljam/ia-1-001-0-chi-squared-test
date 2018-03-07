@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -125,7 +124,7 @@ public class TableLayoutFragment extends Fragment {
 
     /**
      * The initial max width of the {@link TableLayoutFragment#constraintRootLayout} is stored here after
-     * {@link TableLayoutFragment#CalculateTableDimensions()} is first run.<br>
+     * {@link TableLayoutFragment#calculateTableDimensions()} is first run.<br>
      * In case the table is ever empty, the initial max width is restored, which means the substituting
      * "table is empty" -message is centered on the screen.
      */
@@ -133,7 +132,7 @@ public class TableLayoutFragment extends Fragment {
 
     /**
      * The initial max height of the {@link TableLayoutFragment#constraintRootLayout} is stored here after
-     * {@link TableLayoutFragment#CalculateTableDimensions()} is first run.<br>
+     * {@link TableLayoutFragment#calculateTableDimensions()} is first run.<br>
      * In case the table is ever empty, the initial max height is restored, which means the substituting
      * "table is empty" -message is centered on the screen.
      */
@@ -222,7 +221,7 @@ public class TableLayoutFragment extends Fragment {
         noTableText = rootLayout.findViewById(R.id.no_table_text);
 
         // Determine height of table
-        CalculateTableDimensions();
+        calculateTableDimensions();
 
         // set up item decorations
         colHeaders.addItemDecoration(new CustomDividerItemDecoration(getContext(), 0, 0));
@@ -284,7 +283,11 @@ public class TableLayoutFragment extends Fragment {
         return rootLayout;
     }
 
-    private void CalculateTableDimensions() {
+    /**
+     * Optimizes the table layout by cropping blank canvas
+     * and making row height and column widths uniform.
+     */
+    private void calculateTableDimensions() {
         if (initialMaxWidth == 0 && initialMaxHeight == 0) {
             initialMaxWidth = constraintRootLayout.getMaxWidth();
             initialMaxHeight = constraintRootLayout.getMaxHeight();
@@ -454,7 +457,7 @@ public class TableLayoutFragment extends Fragment {
         calculateSums();
 
         // determine new height of table
-        CalculateTableDimensions();
+        calculateTableDimensions();
 
         // notifying all adapters that the data set has changed
         colHeaderAdapter.notifyDataSetChanged();

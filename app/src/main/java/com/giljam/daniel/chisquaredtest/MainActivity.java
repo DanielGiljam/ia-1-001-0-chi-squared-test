@@ -20,14 +20,14 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
      * Needed for final view size calculations.
      * Can always be expected to be constant.
      */
-    public static final int TABLE_WIDTH_OTHER = 96 + 48 + 16 + 16;
+    public static final int TABLE_WIDTH_OTHER = 96 + 48;
 
     /**
      * The height of the border rows in the table layout.
      * Needed for final view size calculations.
      * Can always be expected to be constant.
      */
-    public static final int TABLE_HEIGHT_OTHER = 32 + 32 + 16 + 16;
+    public static final int TABLE_HEIGHT_OTHER = 32 + 32;
 
     /**
      * The width of a column in the table layout.

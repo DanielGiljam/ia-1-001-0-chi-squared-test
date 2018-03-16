@@ -44,6 +44,18 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
     public static final int TABLE_ROW_HEIGHT = 64;
 
     /**
+     * Stores the first return value from CalculateMaxDisplayableTable(),
+     * which is run in the onCreate() -method.
+     */
+    private int maxRows;
+
+    /**
+     * Stores the other return value from CalculateMaxDisplayableTable(),
+     * which is run in the onCreate() -method.
+     */
+    private int maxCols;
+
+    /**
      * This variable is required for performing chi-squared-tests.<br>
      * It consists of the table data provided by the other high-priority variables, represented by a specialized table object model.
      * Is the first out of four high-priority variables.
@@ -103,6 +115,11 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
         colNames = null;
         values = null;
 
+        // initialize priority variables
+        int[] calcMaxDispTable = CalculateMaxDisplayableTable();
+        maxRows = calcMaxDispTable[0];
+        maxCols = calcMaxDispTable[1];
+
         // initialize UI-related variables
         tableLayoutFragment = (TableLayoutFragment) getFragmentManager().findFragmentById(R.id.table_layout_fragment);
 
@@ -140,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
     }
 
     private void ShowSetUp() {
-        SetUpDialog setUp = SetUpDialog.newInstance(rowNames, colNames, values);
+        SetUpDialog setUp = SetUpDialog.newInstance(rowNames, colNames, values, maxRows, maxCols);
         setUp.show(getSupportFragmentManager(), "dialog");
     }
 

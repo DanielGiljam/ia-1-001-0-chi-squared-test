@@ -22,15 +22,18 @@ public class SetupListAdapter extends RecyclerView.Adapter<SetupListAdapter.View
     }
 
     interface AdapterListener {
-        void MonitorInputField(EditText listItemInputField);
+        void MonitorInputField(EditText listItemInputField, final int position, final int rowOrColList);
     }
 
     private AdapterListener adapterListener;
 
+    private int rowOrColList;
+
     private List<String> listItems;
 
-    SetupListAdapter(SetUpDialog dialog, List<String> listItems) {
+    SetupListAdapter(SetUpDialog dialog, int rowOrColList, List<String> listItems) {
         adapterListener = dialog;
+        this.rowOrColList = rowOrColList;
         this.listItems = listItems;
     }
 
@@ -45,7 +48,7 @@ public class SetupListAdapter extends RecyclerView.Adapter<SetupListAdapter.View
     @Override
     public void onBindViewHolder(SetupListAdapter.ViewHolder viewHolder, int position) {
         viewHolder.listItemInputField.setText(listItems.get(position));
-        adapterListener.MonitorInputField(viewHolder.listItemInputField);
+        adapterListener.MonitorInputField(viewHolder.listItemInputField, position, rowOrColList);
     }
 
     @Override

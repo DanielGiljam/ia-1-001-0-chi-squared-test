@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -238,6 +239,19 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
         rowList.setAdapter(rowListAdapter);
 
         // TODO! ItemTouchHelper for rowList.
+        ItemTouchHelper rowListItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                if (allowRowDelete)
+                    removeListItem(viewHolder.getAdapterPosition(), R.string.row_x);
+            }
+        });
+        rowListItemTouchHelper.attachToRecyclerView(rowList);
 
         newColButton = dialogLayout.findViewById(R.id.new_col_button);
         newColButton.setOnClickListener(new View.OnClickListener() {
@@ -256,6 +270,19 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
         colList.setAdapter(colListAdapter);
 
         // TODO! ItemTouchHelper for colList.
+        ItemTouchHelper colListItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                if (allowRowDelete)
+                    removeListItem(viewHolder.getAdapterPosition(), R.string.col_x);
+            }
+        });
+        colListItemTouchHelper.attachToRecyclerView(colList);
 
         checkTableLimits();
     }
@@ -326,6 +353,18 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
             int place = colNames.size();
             colNames.add(getString(placeHolderId, place + 1));
             colListAdapter.notifyItemInserted(place);
+        }
+        tableIsModified();
+        checkTableLimits();
+    }
+
+    private void removeListItem(int index, int placeHolderId) {
+        if (placeHolderId == R.string.row_x) {
+            rowNames.remove(index);
+            rowListAdapter.notifyItemRemoved(index);
+        } else if (placeHolderId == R.string.col_x) {
+            colNames.remove(index);
+            colListAdapter.notifyItemRemoved(index);
         }
         tableIsModified();
         checkTableLimits();

@@ -1,4 +1,4 @@
-package com.giljam.daniel.chisquaredtest;
+package com.giljam.daniel.chisquaredtest.setup;
 
 import android.content.Context;
 import android.util.AttributeSet;

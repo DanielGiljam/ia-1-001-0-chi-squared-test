@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.giljam.daniel.chisquaredtest.CustomEditText
+    <com.giljam.daniel.chisquaredtest.setup.CustomEditText
         android:id="@+id/list_item_input_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

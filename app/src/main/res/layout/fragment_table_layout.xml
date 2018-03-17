@@ -5,7 +5,7 @@
     android:id="@+id/table_layout_fragment_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.giljam.daniel.chisquaredtest.TableLayoutFragment">
+    tools:context="com.giljam.daniel.chisquaredtest.tablelayout.TableLayoutFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/col_headers"

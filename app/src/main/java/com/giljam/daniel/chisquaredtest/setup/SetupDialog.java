@@ -1,4 +1,4 @@
-package com.giljam.daniel.chisquaredtest;
+package com.giljam.daniel.chisquaredtest.setup;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
@@ -21,11 +20,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.giljam.daniel.chisquaredtest.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SetUpDialog extends DialogFragment implements SetupListAdapter.AdapterListener, SetupListItemTouchHelper.ItemTouchHelperAdapter {
+public class SetupDialog extends DialogFragment implements SetupListAdapter.AdapterListener, SetupListItemTouchHelper.ItemTouchHelperAdapter {
 
     /**
      * Maximum amount of rows that user is allowed to create.
@@ -38,17 +39,17 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
     private int maxCols;
 
     /**
-     * The {@link SetUpDialog}'s copy of the row names.
+     * The {@link SetupDialog}'s copy of the row names.
      */
     private List<String> rowNames = new ArrayList<>();
 
     /**
-     * The {@link SetUpDialog}'s copy of the column names.
+     * The {@link SetupDialog}'s copy of the column names.
      */
     private List<String> colNames = new ArrayList<>();
 
     /**
-     * The {@link SetUpDialog}'s copy of the values.
+     * The {@link SetupDialog}'s copy of the values.
      */
     private List<List<Integer>> values = new ArrayList<>();
 
@@ -63,7 +64,7 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
     private Button clearValuesAndResetTableButton;
 
     /**
-     * Variable for the {@link Button} that the user can add new rows to the {@link SetUpDialog#rowList} with.
+     * Variable for the {@link Button} that the user can add new rows to the {@link SetupDialog#rowList} with.
      */
     private Button newRowButton;
 
@@ -84,7 +85,7 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
     private RecyclerView rowList;
 
     /**
-     * Variable for the {@link Button} that the user can add new columns to the {@link SetUpDialog#colList} with.
+     * Variable for the {@link Button} that the user can add new columns to the {@link SetupDialog#colList} with.
      */
     private Button newColButton;
 
@@ -116,26 +117,26 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
      */
     private String targetedInputFieldTextBackup = "";
 
-    public SetUpDialog() {
+    public SetupDialog() {
 
     }
 
     /**
      * Use this factory method to create an instance of this fragment.
-     * @param rowNames This {@link SetUpDialog}'s copy of the row names.
-     * @param colNames This {@link SetUpDialog}'s copy of the column names.
-     * @param values This {@link SetUpDialog}'s copy of the values.
+     * @param rowNames This {@link SetupDialog}'s copy of the row names.
+     * @param colNames This {@link SetupDialog}'s copy of the column names.
+     * @param values This {@link SetupDialog}'s copy of the values.
      * @param maxRows The maximum amount of rows that the user is allowed to create.
      * @param maxCols The maximum amount of columns that the user is allowed to create.
      * @return A new instance of fragment TableLayoutFragment.
      */
-    public static SetUpDialog newInstance(List<String> rowNames,
+    public static SetupDialog newInstance(List<String> rowNames,
                                           List<String> colNames,
                                           List<List<Integer>> values,
                                           int maxRows,
                                           int maxCols) {
         // Instantiate this dialog
-        SetUpDialog dialog = new SetUpDialog();
+        SetupDialog dialog = new SetupDialog();
 
         // Pass provided parameter values (if they exist) to this instance of the dialog
         if (maxRows < 2) dialog.maxRows = 2;
@@ -223,10 +224,9 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
         });
 
         rowList = dialogLayout.findViewById(R.id.row_list);
-        ViewGroup.LayoutParams rowListLayoutParams = rowList.getLayoutParams();
-        rowListLayoutParams.height = (int) getResources().getDimension(R.dimen.setup_list_item_height) * (maxRows / 2);
-        rowList.setLayoutParams(rowListLayoutParams);
-        rowList.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
+        rowList.setLayoutManager(new SetupListLayoutManager(getContext()));
+        if (rowNames.size() <= maxRows / 2) limitListSize(R.string.row_x, false);
+        else limitListSize(R.string.row_x, true);
         rowListAdapter = new SetupListAdapter(this, R.string.row_x, rowNames);
         rowList.setAdapter(rowListAdapter);
         rowListItemTouchHelper = new SetupListItemTouchHelper(this, R.string.row_x);
@@ -241,10 +241,9 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
         });
 
         colList = dialogLayout.findViewById(R.id.col_list);
-        ViewGroup.LayoutParams colListLayoutParams = colList.getLayoutParams();
-        colListLayoutParams.height = (int) getResources().getDimension(R.dimen.setup_list_item_height) * (maxRows / 2);
-        colList.setLayoutParams(colListLayoutParams);
-        colList.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
+        colList.setLayoutManager(new SetupListLayoutManager(getContext()));
+        if (colNames.size() <= maxRows / 2) limitListSize(R.string.col_x, false);
+        else limitListSize(R.string.col_x, true);
         colListAdapter = new SetupListAdapter(this, R.string.col_x, colNames);
         colList.setAdapter(colListAdapter);
         colListItemTouchHelper = new SetupListItemTouchHelper(this, R.string.col_x);
@@ -255,8 +254,8 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
     }
 
     /**
-     * Sets a value to {@link SetUpDialog#valuesArePresent}
-     * based on the contents of {@link SetUpDialog#values}.
+     * Sets a value to {@link SetupDialog#valuesArePresent}
+     * based on the contents of {@link SetupDialog#values}.
      */
     private void areValuesPresent() {
         int i = 0;
@@ -271,8 +270,8 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
     }
 
     /**
-     * Sets the visibility of {@link SetUpDialog#clearValuesAndResetTableButton}
-     * based on the contents of {@link SetUpDialog#rowNames} and {@link SetUpDialog#colNames}.
+     * Sets the visibility of {@link SetupDialog#clearValuesAndResetTableButton}
+     * based on the contents of {@link SetupDialog#rowNames} and {@link SetupDialog#colNames}.
      */
     private void tableIsModified() {
         if (rowNames.size() == 2 && colNames.size() == 2) {
@@ -316,26 +315,59 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
             colListItemTouchHelper.setItemViewSwipeEnabled(false);
     }
 
+    private void limitListSize(int placeHolderId, boolean enabled) {
+        if (enabled) {
+            if (placeHolderId == R.string.row_x) {
+                ViewGroup.LayoutParams rowListLayoutParams = rowList.getLayoutParams();
+                rowListLayoutParams.height = ((int) getResources().getDimension(R.dimen.setup_list_item_height) * (maxRows / 2)) + 1;
+                rowList.setLayoutParams(rowListLayoutParams);
+                ((SetupListLayoutManager) rowList.getLayoutManager()).setCanScrollVertically(true);
+            } else if (placeHolderId == R.string.col_x) {
+                ViewGroup.LayoutParams colListLayoutParams = colList.getLayoutParams();
+                colListLayoutParams.height = ((int) getResources().getDimension(R.dimen.setup_list_item_height) * (maxRows / 2)) + 1;
+                colList.setLayoutParams(colListLayoutParams);
+                ((SetupListLayoutManager) colList.getLayoutManager()).setCanScrollVertically(true);
+
+            }
+        } else {
+            if (placeHolderId == R.string.row_x) {
+                ViewGroup.LayoutParams rowListLayoutParams = rowList.getLayoutParams();
+                rowListLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                rowList.setLayoutParams(rowListLayoutParams);
+                ((SetupListLayoutManager) rowList.getLayoutManager()).setCanScrollVertically(false);
+            } else if (placeHolderId == R.string.col_x) {
+                ViewGroup.LayoutParams colListLayoutParams = colList.getLayoutParams();
+                colListLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                colList.setLayoutParams(colListLayoutParams);
+                ((SetupListLayoutManager) colList.getLayoutManager()).setCanScrollVertically(false);
+            }
+        }
+    }
+
     private void newListItem(int placeHolderId) {
         if (placeHolderId == R.string.row_x) {
+            if (rowNames.size() == maxRows / 2) limitListSize(placeHolderId, true);
             int place = rowNames.size();
             rowNames.add(getString(placeHolderId, place + 1));
             List<Integer> row = new ArrayList<>();
             for (int j = 0; j < colNames.size(); j++) row.add(0);
             values.add(row);
             rowListAdapter.notifyItemInserted(place);
+            rowList.smoothScrollToPosition(place);
         } else if (placeHolderId == R.string.col_x) {
+            if (colNames.size() == maxRows / 2) limitListSize(placeHolderId, true);
             int place = colNames.size();
             colNames.add(getString(placeHolderId, place + 1));
             for (List<Integer> row : values) row.add(0);
             colListAdapter.notifyItemInserted(place);
+            colList.smoothScrollToPosition(place);
         }
         tableIsModified();
         checkTableLimits();
     }
 
     /**
-     * Clear the values contained within the {@link SetUpDialog#values} variable.
+     * Clear the values contained within the {@link SetupDialog#values} variable.
      */
     private void clearValues() {
 
@@ -399,10 +431,12 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
             rowNames.remove(index);
             values.remove(index);
             rowListAdapter.notifyItemRemoved(index);
+            if (rowNames.size() == maxRows / 2) limitListSize(placeHolderId, false);
         } else if (placeHolderId == R.string.col_x) {
             colNames.remove(index);
             for (List<Integer> row : values) row.remove(index);
             colListAdapter.notifyItemRemoved(index);
+            if (colNames.size() == maxRows / 2) limitListSize(placeHolderId, false);
         }
         areValuesPresent();
         tableIsModified();

@@ -9,6 +9,9 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.giljam.daniel.chisquaredtest.setup.SetupDialog;
+import com.giljam.daniel.chisquaredtest.tablelayout.TableLayoutFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements TableLayoutFragme
     }
 
     private void ShowSetUp() {
-        SetUpDialog setUp = SetUpDialog.newInstance(rowNames, colNames, values, maxRows, maxCols);
+        SetupDialog setUp = SetupDialog.newInstance(rowNames, colNames, values, maxRows, maxCols);
         setUp.show(getSupportFragmentManager(), "dialog");
     }
 

@@ -1,4 +1,4 @@
-package com.giljam.daniel.chisquaredtest;
+package com.giljam.daniel.chisquaredtest.setup;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;

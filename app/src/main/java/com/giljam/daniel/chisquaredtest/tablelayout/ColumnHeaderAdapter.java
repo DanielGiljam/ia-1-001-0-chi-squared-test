@@ -1,4 +1,4 @@
-package com.giljam.daniel.chisquaredtest;
+package com.giljam.daniel.chisquaredtest.tablelayout;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.giljam.daniel.chisquaredtest.R;
+
 import java.util.List;
 
-public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder> {
+public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -17,7 +19,7 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
 
         public ViewHolder(View itemView) {
             super(itemView);
-            text = itemView.findViewById(R.id.row_sum_item_text);
+            text = itemView.findViewById(R.id.col_header_item_text);
             /*text.post(new Runnable() {
                 @Override
                 public void run() {
@@ -30,7 +32,7 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
     }
 
     private Context context;
-    private List<Integer> rowSums;
+    private List<String> colHeaders;
 
     /*private int width = 0;
     private int height = 0;
@@ -40,12 +42,16 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
 
     private int debugIterator = 0;*/
 
-    public RowSumAdapter(Context context, List<Integer> rowSums) {
+    public ColumnHeaderAdapter(Context context, List<String> colHeaders) {
         this.context = context;
-        this.rowSums = rowSums;
+        this.colHeaders = colHeaders;
     }
 
-    /*public void setWidth(boolean adapt, int width) {
+    /*public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(boolean adapt, int width) {
         adaptWidth = adapt;
         this.width = width;
     }
@@ -70,22 +76,22 @@ public class RowSumAdapter extends RecyclerView.Adapter<RowSumAdapter.ViewHolder
     }
 
     @Override
-    public RowSumAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ColumnHeaderAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View rowSumCell = inflater.inflate(R.layout.row_sum_item, parent, false);
-        return new ViewHolder(rowSumCell);
+        View colHeaderCell = inflater.inflate(R.layout.col_header_item, parent, false);
+        return new ViewHolder(colHeaderCell);
     }
 
     @Override
-    public void onBindViewHolder(RowSumAdapter.ViewHolder viewHolder, int position) {
-        viewHolder.text.setText(getContext().getString(R.string.sum_item_text, rowSums.get(position)));
+    public void onBindViewHolder(ColumnHeaderAdapter.ViewHolder viewHolder, int position) {
+        viewHolder.text.setText(colHeaders.get(position));
         /*if (adaptWidth) viewHolder.text.setWidth(width);
         if (adaptHeight) viewHolder.text.setHeight(height);*/
     }
 
     @Override
     public int getItemCount() {
-        return rowSums.size();
+        return colHeaders.size();
     }
 }

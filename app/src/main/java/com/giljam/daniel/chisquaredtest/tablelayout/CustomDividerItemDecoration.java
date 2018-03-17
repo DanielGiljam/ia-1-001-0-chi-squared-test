@@ -24,7 +24,7 @@
  * Modified version made by Daniel Giljam, 2018
  */
 
-package com.giljam.daniel.chisquaredtest;
+package com.giljam.daniel.chisquaredtest.tablelayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;

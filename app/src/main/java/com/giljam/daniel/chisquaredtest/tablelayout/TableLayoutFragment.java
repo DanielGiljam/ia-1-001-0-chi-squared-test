@@ -1,4 +1,4 @@
-package com.giljam.daniel.chisquaredtest;
+package com.giljam.daniel.chisquaredtest.tablelayout;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.giljam.daniel.chisquaredtest.MainActivity;
+import com.giljam.daniel.chisquaredtest.R;
 
 import java.util.ArrayList;
 import java.util.List;

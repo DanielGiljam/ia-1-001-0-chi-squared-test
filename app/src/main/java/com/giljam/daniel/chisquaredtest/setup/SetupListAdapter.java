@@ -1,10 +1,12 @@
-package com.giljam.daniel.chisquaredtest;
+package com.giljam.daniel.chisquaredtest.setup;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.giljam.daniel.chisquaredtest.R;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class SetupListAdapter extends RecyclerView.Adapter<SetupListAdapter.View
 
     private List<String> listItems;
 
-    SetupListAdapter(SetUpDialog dialog, int placeHolderId, List<String> listItems) {
+    SetupListAdapter(SetupDialog dialog, int placeHolderId, List<String> listItems) {
         adapterListener = dialog;
         this.placeHolderId = placeHolderId;
         this.listItems = listItems;

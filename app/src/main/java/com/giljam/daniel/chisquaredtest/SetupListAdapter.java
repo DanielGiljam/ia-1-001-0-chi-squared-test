@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class SetupListAdapter extends RecyclerView.Adapter<SetupListAdapter.View
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        EditText listItemInputField;
+        CustomEditText listItemInputField;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -22,7 +21,7 @@ public class SetupListAdapter extends RecyclerView.Adapter<SetupListAdapter.View
     }
 
     interface AdapterListener {
-        void MonitorInputField(EditText listItemInputField, final int position, final int placeHolderId);
+        void MonitorInputField(CustomEditText listItemInputField, final int position, final int placeHolderId);
     }
 
     private AdapterListener adapterListener;

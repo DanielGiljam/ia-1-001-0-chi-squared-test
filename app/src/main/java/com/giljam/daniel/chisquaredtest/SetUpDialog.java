@@ -1,6 +1,7 @@
 package com.giljam.daniel.chisquaredtest;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -10,9 +11,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -176,6 +180,16 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
      * View setup part extracted from the onCreateDialog() -method just to organize things a little bit more.
      */
     private void setUpViews() {
+
+        dialogLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        });
 
         clearValuesAndResetTableButton = dialogLayout.findViewById(R.id.clear_values_and_reset_table_button);
         if (valuesArePresent) {
@@ -409,7 +423,7 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
         checkTableLimits();
     }
 
-    public void MonitorInputField(EditText listItemInputField, final int position, final int placeHolderId) {
+    public void MonitorInputField(CustomEditText listItemInputField, final int position, final int placeHolderId) {
         listItemInputField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -427,6 +441,29 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
                 }
             }
         });
-        // TODO! Handle "Done", enter key and back button presses.
+        listItemInputField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    dialogLayout.requestFocus();
+                }
+                return false;
+            }
+        });
+        listItemInputField.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    dialogLayout.requestFocus();
+                }
+                return false;
+            }
+        });
+        listItemInputField.setSkbInterceptor(new CustomEditText.SoftKeyboardBackInterceptor() {
+            @Override
+            public void OnBackPressed() {
+                dialogLayout.requestFocus();
+            }
+        });
     }
 }

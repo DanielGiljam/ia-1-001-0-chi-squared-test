@@ -18,9 +18,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class SetUpDialog extends DialogFragment implements SetupListAdapter.AdapterListener {
+public class SetUpDialog extends DialogFragment implements SetupListAdapter.AdapterListener, SetupListItemTouchHelper.ItemTouchHelperAdapter {
 
     /**
      * Maximum amount of rows that user is allowed to create.
@@ -58,11 +59,6 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
     private Button clearValuesAndResetTableButton;
 
     /**
-     * Variable for the message that tells the max amount of rows and columns that can be set up.
-     */
-    private TextView tableSizeLimitationsText;
-
-    /**
      * Variable for the {@link Button} that the user can add new rows to the {@link SetUpDialog#rowList} with.
      */
     private Button newRowButton;
@@ -72,6 +68,11 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
      * so that it can be displayed by the rowList {@link RecyclerView}.
      */
     private SetupListAdapter rowListAdapter;
+
+    /**
+     * Enables swipe and drag functionality for the for the rowList {@link RecyclerView}.
+     */
+    private SetupListItemTouchHelper rowListItemTouchHelper;
 
     /**
      * List of the row headers in the table that's being set up.
@@ -90,6 +91,11 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
     private SetupListAdapter colListAdapter;
 
     /**
+     * Enables swipe and drag functionality for the for the colList {@link RecyclerView}.
+     */
+    private SetupListItemTouchHelper colListItemTouchHelper;
+
+    /**
      * List of the column headers in the table that's being set up.
      */
     private RecyclerView colList;
@@ -99,24 +105,6 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
      * Determines if the "Clear values" -button is shown.
      */
     private boolean valuesArePresent = false;
-
-    /**
-     * Indicates whether the table is identical to the default "new" table.
-     * Determines if the "Reset table" -button is shown.
-     */
-    private boolean tableIsModified = false;
-
-    /**
-     * Checked by corresponding {@link RecyclerView}'s {@link android.support.v7.widget.helper.ItemTouchHelper} if it
-     * should allow deleting of row list entries.
-     */
-    private boolean allowRowDelete = false;
-
-    /**
-     * Checked by corresponding {@link RecyclerView}'s {@link android.support.v7.widget.helper.ItemTouchHelper} if it
-     * should allow deleting of column list entries.
-     */
-    private boolean allowColDelete = false;
 
     /**
      * Backs up the text that previously in the {@link EditText} input field
@@ -198,14 +186,6 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
                     clearValues();
                 }
             });
-        } else if (tableIsModified()) {
-            clearValuesAndResetTableButton.setText(R.string.reset_table_button_text);
-            clearValuesAndResetTableButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setUpNewTable();
-                }
-            });
         } else {
             clearValuesAndResetTableButton.setText(R.string.reset_table_button_text);
             clearValuesAndResetTableButton.setOnClickListener(new View.OnClickListener() {
@@ -214,11 +194,9 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
                     setUpNewTable();
                 }
             });
-            clearValuesAndResetTableButton.setVisibility(View.GONE);
         }
 
-
-        tableSizeLimitationsText = dialogLayout.findViewById(R.id.table_size_limitations_text);
+        TextView tableSizeLimitationsText = dialogLayout.findViewById(R.id.table_size_limitations_text);
         CharSequence tslText = Html.fromHtml(getString(R.string.table_size_limitations_text, maxRows, maxCols));
         tableSizeLimitationsText.setText(tslText);
 
@@ -237,21 +215,8 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
         rowList.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
         rowListAdapter = new SetupListAdapter(this, R.string.row_x, rowNames);
         rowList.setAdapter(rowListAdapter);
-
-        // TODO! ItemTouchHelper for rowList.
-        ItemTouchHelper rowListItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                if (allowRowDelete)
-                    removeListItem(viewHolder.getAdapterPosition(), R.string.row_x);
-            }
-        });
-        rowListItemTouchHelper.attachToRecyclerView(rowList);
+        rowListItemTouchHelper = new SetupListItemTouchHelper(this, R.string.row_x);
+        new ItemTouchHelper(rowListItemTouchHelper).attachToRecyclerView(rowList);
 
         newColButton = dialogLayout.findViewById(R.id.new_col_button);
         newColButton.setOnClickListener(new View.OnClickListener() {
@@ -268,22 +233,10 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
         colList.setLayoutManager(new LinearLayoutManager(getContext(), 1, false));
         colListAdapter = new SetupListAdapter(this, R.string.col_x, colNames);
         colList.setAdapter(colListAdapter);
+        colListItemTouchHelper = new SetupListItemTouchHelper(this, R.string.col_x);
+        new ItemTouchHelper(colListItemTouchHelper).attachToRecyclerView(colList);
 
-        // TODO! ItemTouchHelper for colList.
-        ItemTouchHelper colListItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                if (allowRowDelete)
-                    removeListItem(viewHolder.getAdapterPosition(), R.string.col_x);
-            }
-        });
-        colListItemTouchHelper.attachToRecyclerView(colList);
-
+        tableIsModified();
         checkTableLimits();
     }
 
@@ -304,29 +257,26 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
     }
 
     /**
-     * Sets a value to {@link SetUpDialog#tableIsModified}
+     * Sets the visibility of {@link SetUpDialog#clearValuesAndResetTableButton}
      * based on the contents of {@link SetUpDialog#rowNames} and {@link SetUpDialog#colNames}.
      */
-    private boolean tableIsModified() {
+    private void tableIsModified() {
         if (rowNames.size() == 2 && colNames.size() == 2) {
             boolean rn1 = rowNames.get(0).equals(getString(R.string.row_x, 1));
             boolean rn2 = rowNames.get(1).equals(getString(R.string.row_x, 2));
             boolean cn1 = colNames.get(0).equals(getString(R.string.col_x, 1));
             boolean cn2 = colNames.get(1).equals(getString(R.string.col_x, 2));
-            tableIsModified = !(rn1 && rn2 && cn1 && cn2);
-            if (tableIsModified) {
+            if (!(rn1 && rn2 && cn1 && cn2)) {
                 if (!valuesArePresent)
-                    clearValuesAndResetTableButton.setVisibility(View.VISIBLE);
+                    clearValuesAndResetTableButton.setEnabled(true);
             } else {
                 if (!valuesArePresent)
-                    clearValuesAndResetTableButton.setVisibility(View.GONE);
+                    clearValuesAndResetTableButton.setEnabled(false);
             }
         } else {
-            tableIsModified = true;
             if (!valuesArePresent)
-                clearValuesAndResetTableButton.setVisibility(View.VISIBLE);
+                clearValuesAndResetTableButton.setEnabled(true);
         }
-        return tableIsModified;
     }
 
     /**
@@ -334,37 +284,37 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
      * beyond min/max values.
      */
     private void checkTableLimits() {
-        if (!newRowButton.isEnabled() && rowNames.size() < maxRows) newRowButton.setEnabled(true);
-        if (!newColButton.isEnabled() && colNames.size() < maxCols) newColButton.setEnabled(true);
-        if (!allowRowDelete && rowNames.size() > 2) allowRowDelete = true;
-        if (!allowColDelete && colNames.size() > 2) allowColDelete = true;
-        if (rowNames.size() == maxRows) newRowButton.setEnabled(false);
-        if (colNames.size() == maxCols) newColButton.setEnabled(false);
-        if (rowNames.size() == 2) allowRowDelete = false;
-        if (colNames.size() == 2) allowColDelete = false;
+        if (!newRowButton.isEnabled() && rowNames.size() < maxRows)
+            newRowButton.setEnabled(true);
+        if (!newColButton.isEnabled() && colNames.size() < maxCols)
+            newColButton.setEnabled(true);
+        if (!rowListItemTouchHelper.isItemViewSwipeEnabled() && rowNames.size() > 2)
+            rowListItemTouchHelper.setItemViewSwipeEnabled(true);
+        if (!colListItemTouchHelper.isItemViewSwipeEnabled() && colNames.size() > 2)
+            colListItemTouchHelper.setItemViewSwipeEnabled(true);
+        if (rowNames.size() == maxRows)
+            newRowButton.setEnabled(false);
+        if (colNames.size() == maxCols)
+            newColButton.setEnabled(false);
+        if (rowNames.size() == 2)
+            rowListItemTouchHelper.setItemViewSwipeEnabled(false);
+        if (colNames.size() == 2)
+            colListItemTouchHelper.setItemViewSwipeEnabled(false);
     }
 
     private void newListItem(int placeHolderId) {
         if (placeHolderId == R.string.row_x) {
             int place = rowNames.size();
             rowNames.add(getString(placeHolderId, place + 1));
+            List<Integer> row = new ArrayList<>();
+            for (int j = 0; j < colNames.size(); j++) row.add(0);
+            values.add(row);
             rowListAdapter.notifyItemInserted(place);
         } else if (placeHolderId == R.string.col_x) {
             int place = colNames.size();
             colNames.add(getString(placeHolderId, place + 1));
+            for (List<Integer> row : values) row.add(0);
             colListAdapter.notifyItemInserted(place);
-        }
-        tableIsModified();
-        checkTableLimits();
-    }
-
-    private void removeListItem(int index, int placeHolderId) {
-        if (placeHolderId == R.string.row_x) {
-            rowNames.remove(index);
-            rowListAdapter.notifyItemRemoved(index);
-        } else if (placeHolderId == R.string.col_x) {
-            colNames.remove(index);
-            colListAdapter.notifyItemRemoved(index);
         }
         tableIsModified();
         checkTableLimits();
@@ -430,7 +380,36 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
         colListAdapter.notifyDataSetChanged();
     }
 
-    public void MonitorInputField(EditText listItemInputField, final int position, final int rowOrColList) {
+    public void RemoveListItem(int index, int placeHolderId) {
+        if (placeHolderId == R.string.row_x) {
+            rowNames.remove(index);
+            values.remove(index);
+            rowListAdapter.notifyItemRemoved(index);
+        } else if (placeHolderId == R.string.col_x) {
+            colNames.remove(index);
+            for (List<Integer> row : values) row.remove(index);
+            colListAdapter.notifyItemRemoved(index);
+        }
+        areValuesPresent();
+        tableIsModified();
+        checkTableLimits();
+    }
+
+    public void MoveListItem(int startIndex, int endIndex, int placeHolderId) {
+        if (placeHolderId == R.string.row_x) {
+            Collections.swap(rowNames, startIndex, endIndex);
+            Collections.swap(values, startIndex, endIndex);
+            rowListAdapter.notifyItemMoved(startIndex, endIndex);
+        } else if (placeHolderId == R.string.col_x) {
+            Collections.swap(colNames, startIndex, endIndex);
+            for (List<Integer> row : values) Collections.swap(row, startIndex, endIndex);
+            colListAdapter.notifyItemMoved(startIndex, endIndex);
+        }
+        tableIsModified();
+        checkTableLimits();
+    }
+
+    public void MonitorInputField(EditText listItemInputField, final int position, final int placeHolderId) {
         listItemInputField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -441,8 +420,8 @@ public class SetUpDialog extends DialogFragment implements SetupListAdapter.Adap
                     if (inputFieldText.isEmpty())
                         ((EditText)view).setText(targetedInputFieldTextBackup);
                     else if (!inputFieldText.equals(targetedInputFieldTextBackup)) {
-                        if (rowOrColList == R.string.row_x) rowNames.set(position, inputFieldText);
-                        else if (rowOrColList == R.string.col_x) colNames.set(position, inputFieldText);
+                        if (placeHolderId == R.string.row_x) rowNames.set(position, inputFieldText);
+                        else if (placeHolderId == R.string.col_x) colNames.set(position, inputFieldText);
                         tableIsModified();
                     }
                 }

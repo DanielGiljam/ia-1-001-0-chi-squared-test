@@ -31,6 +31,10 @@ import java.util.List;
 
 public class SetupDialog extends DialogFragment implements SetupListAdapter.AdapterListener, SetupListItemTouchHelper.ItemTouchHelperAdapter {
 
+    public interface SetupListener {
+        void SetupTable(List<String> rowNames, List<String> colNames, List<List<Integer>> values);
+    }
+
     /**
      * Maximum amount of rows that user is allowed to create.
      */
@@ -120,21 +124,19 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
      */
     private String targetedInputFieldTextBackup = "";
 
-    public SetupDialog() {
-
-    }
+    private SetupListener setupListener;
 
     /**
      * Use this factory method to create an instance of this fragment.
      * @param maxDisplayableTable The return values of {@link MainActivity#CalculateMaxDisplayableTable()}.
-     * @return A new instance of fragment TableLayoutFragment.
+     * @return A new instance of fragment SetupDialog.
      */
-    public static SetupDialog newInstance(int[] maxDisplayableTable) {
+    public static SetupDialog newInstance(SetupListener mainActivity, int[] maxDisplayableTable) {
 
-        // Instantiate this dialog
         SetupDialog dialog = new SetupDialog();
 
-        // Pass provided parameter values (if they exist) to this instance of the dialog
+        dialog.setupListener = mainActivity;
+
         if (maxDisplayableTable[0] < 2) dialog.maxRows = 2;
         else dialog.maxRows = maxDisplayableTable[0];
         if (maxDisplayableTable[1] < 2) dialog.maxCols = 2;
@@ -143,9 +145,13 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
         return dialog;
     }
 
+    public void show(List<String> rowNames, List<String> colNames, List<List<Integer>> values, FragmentManager fragmentManager) {
+        loadData(rowNames, colNames, values);
+        super.show(fragmentManager, getTag());
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) setUpNewTable();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         dialogLayout = layoutInflater.inflate(R.layout.dialog_set_up, null, false);
@@ -166,23 +172,33 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
         return builder.create();
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        setupListener.SetupTable(rowNames, colNames, values);
+        super.onDismiss(dialog);
+    }
+
     /**
-     * Custom "show" method that updates the {@link SetupDialog}'s copy
+     * Updates the {@link SetupDialog}'s copy
      * of the row names, column names and values.
-     * @param manager A instance of {@link FragmentManager} needed to forward
-     *                the "show" method to the superclasses' implementation of it.
      * @param rowNames This {@link SetupDialog}'s copy of the row names.
      * @param colNames This {@link SetupDialog}'s copy of the column names.
-     * @param values This {@link SetupDialog}'s copy of the values.
+     * @param values   This {@link SetupDialog}'s copy of the values.
      */
-    public void show(FragmentManager manager, List<String> rowNames, List<String> colNames, List<List<Integer>> values) {
-        if (rowNames != null && colNames != null && values != null) {
-            this.rowNames = rowNames;
-            this.colNames = colNames;
-            this.values = values;
-            areValuesPresent();
-        }
-        super.show(manager, getTag());
+    public void loadData(List<String> rowNames, List<String> colNames, List<List<Integer>> values) {
+
+        if (this.rowNames != null) this.rowNames.clear();
+        else this.rowNames = new ArrayList<>();
+        if (this.colNames != null) this.colNames.clear();
+        else this.colNames = new ArrayList<>();
+        if (this.values != null) this.values.clear();
+        else this.values = new ArrayList<>();
+
+        this.rowNames.addAll(rowNames);
+        this.colNames.addAll(colNames);
+        this.values.addAll(values);
+
+        areValuesPresent();
     }
 
     /**
@@ -257,8 +273,12 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
         colListItemTouchHelper = new SetupListItemTouchHelper(this, R.string.col_x);
         new ItemTouchHelper(colListItemTouchHelper).attachToRecyclerView(colList);
 
-        tableIsModified();
-        checkTableLimits();
+        if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) {
+            setUpNewTable();
+        } else {
+            tableIsModified();
+            checkTableLimits();
+        }
     }
 
     /**
@@ -323,6 +343,13 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
             colListItemTouchHelper.setItemViewSwipeEnabled(false);
     }
 
+    /**
+     * Toggles sizing mode for the setup list of rows and the setup list of columns.
+     * @param placeHolderId The id for the string resources that is used as an indicator
+     *                      for which list is targeted.
+     * @param enabled If true, the size will be fixed, if false, it will adapt to
+     *                the amount of list items.
+     */
     private void limitListSize(int placeHolderId, boolean enabled) {
         if (enabled) {
             if (placeHolderId == R.string.row_x) {
@@ -352,6 +379,11 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
         }
     }
 
+    /**
+     * Creates a new list item in the setup lists representing columns and rows.
+     * @param placeHolderId The id for the string resources that is used as an indicator
+     *                      for which list is targeted.
+     */
     private void newListItem(int placeHolderId) {
         if (placeHolderId == R.string.row_x) {
             if (rowNames.size() == maxRows / 2) limitListSize(placeHolderId, true);

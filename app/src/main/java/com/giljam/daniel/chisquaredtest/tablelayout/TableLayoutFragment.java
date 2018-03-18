@@ -261,7 +261,6 @@ public class TableLayoutFragment extends Fragment {
      * This function should be executed every time after the {@link TableLayoutFragment#values} variable has been re-assigned/updated,
      * so that the sum-values stay up to date.
      */
-    // TODO: Implement better sum calculation!
     private void calculateSums() {
 
         // properly resetting following variables

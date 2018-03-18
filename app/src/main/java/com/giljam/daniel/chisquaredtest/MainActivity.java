@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements CellAdapter.ValueListener {
+public class MainActivity extends AppCompatActivity implements SetupDialog.SetupListener, CellAdapter.ValueListener {
 
     /**
      * This variable is required for performing chi-squared-tests.<br>
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements CellAdapter.Value
      * The size of the list tells how many rows there are in total.
      * Is the second out of four high-priority variables.
      */
-    private List<String> rowNames;
+    private List<String> rowNames = new ArrayList<>();
 
     /**
      * Contains the names of the columns as strings.<br>
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements CellAdapter.Value
      * The size of the list tells how many columns there are in total.
      * Is the third out of four high-priority variables.
      */
-    private List<String> colNames;
+    private List<String> colNames = new ArrayList<>();
 
     /**
      * Contains the grid of values.<br>
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements CellAdapter.Value
      * The sizes of the inner lists should be equal to the size of the colNames -list.<br>
      * This is the fourth and last high-priority variable.
      */
-    private List<List<Integer>> values;
+    private List<List<Integer>> values = new ArrayList<>();
 
     /**
      * Variable for the fragment that draws the grid of values onto the screen as an interactive table.
@@ -88,18 +88,11 @@ public class MainActivity extends AppCompatActivity implements CellAdapter.Value
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // initialize high-priority variables
-        theTable = null;
-        rowNames = null;
-        colNames = null;
-        values = null;
-
         // initialize variable for table layout fragment
         tableLayoutFragment = (TableLayoutFragment) getFragmentManager().findFragmentById(R.id.table_layout_fragment);
 
         // initialize variable for setup dialog
-        setupDialog = SetupDialog.newInstance(CalculateMaxDisplayableTable());
-
+        setupDialog = SetupDialog.newInstance(this, CalculateMaxDisplayableTable());
     }
 
     @Override
@@ -116,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements CellAdapter.Value
         // Course of actions taken is determined based on the id of the action bar item
         if (id == R.id.set_up) {
             // Show the setup dialog
-            setupDialog.show(getSupportFragmentManager(), rowNames, colNames, values);
+            setupDialog.show(rowNames, colNames, values, getSupportFragmentManager());
         }
 
         return super.onOptionsItemSelected(item);
@@ -238,6 +231,21 @@ public class MainActivity extends AppCompatActivity implements CellAdapter.Value
      * Then it updates the table layout shown on the screen by notifying all adapters about data change and, if necessary, taking care of any inflation/deflation of the table layout.
      */
     private void Refresh() {
+
+    }
+
+    public void SetupTable(List<String> rowNames, List<String> colNames, List<List<Integer>> values) {
+        if (this.rowNames != null) this.rowNames.clear();
+        else this.rowNames = new ArrayList<>();
+        if (this.colNames != null) this.colNames.clear();
+        else this.colNames = new ArrayList<>();
+        if (this.values != null) this.values.clear();
+        else this.values = new ArrayList<>();
+
+        this.rowNames.addAll(rowNames);
+        this.colNames.addAll(colNames);
+        this.values.addAll(values);
+
         tableLayoutFragment.notifyDataSetsChanged(rowNames, colNames, values);
     }
 

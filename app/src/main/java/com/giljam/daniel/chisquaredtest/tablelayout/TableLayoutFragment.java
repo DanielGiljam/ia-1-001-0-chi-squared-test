@@ -59,7 +59,7 @@ public class TableLayoutFragment extends Fragment {
     private RecyclerView rowHeaders;
 
     /**
-     * Variable for the {@link RecyclerView} that makes up the table itself.
+     * Variable for the {@link RecyclerView} that makes up the Table itself.
      */
     private RecyclerView tableLayout;
 
@@ -74,7 +74,7 @@ public class TableLayoutFragment extends Fragment {
     private RecyclerView rowSumCol;
 
     /**
-     * Variable for the {@link TextView} that substitutes with a message when there is no table data to draw.
+     * Variable for the {@link TextView} that substitutes with a message when there is no Table data to draw.
      */
     private TextView noTableText;
 
@@ -111,21 +111,21 @@ public class TableLayoutFragment extends Fragment {
     /**
      * The initial max width of the {@link TableLayoutFragment#constraintRootLayout} is stored here after
      * {@link TableLayoutFragment#calculateTableDimensions()} is first run.<br>
-     * In case the table is ever empty, the initial max width is restored, which means the substituting
-     * "table is empty" -message is centered on the screen.
+     * In case the Table is ever empty, the initial max width is restored, which means the substituting
+     * "Table is empty" -message is centered on the screen.
      */
     private int initialMaxWidth = 0;
 
     /**
      * The initial max height of the {@link TableLayoutFragment#constraintRootLayout} is stored here after
      * {@link TableLayoutFragment#calculateTableDimensions()} is first run.<br>
-     * In case the table is ever empty, the initial max height is restored, which means the substituting
-     * "table is empty" -message is centered on the screen.
+     * In case the Table is ever empty, the initial max height is restored, which means the substituting
+     * "Table is empty" -message is centered on the screen.
      */
     private int initialMaxHeight = 0;
 
     /**
-     * Responsible for timing the table cell dimension distribution.
+     * Responsible for timing the Table cell dimension distribution.
      */
     @Deprecated
     private boolean tableCellDimensionDistributionIsArmed = false;
@@ -158,7 +158,7 @@ public class TableLayoutFragment extends Fragment {
         rowSumCol = rootLayout.findViewById(R.id.row_sums);
         noTableText = rootLayout.findViewById(R.id.no_table_text);
 
-        // Determine height of table
+        // Determine height of Table
         calculateTableDimensions();
 
         // set up item decorations
@@ -175,7 +175,7 @@ public class TableLayoutFragment extends Fragment {
         rowSumAdapter = new RowSumAdapter(getContext(), rowSums);
 
         // set layout managers for the RecyclerViews
-        // NOTE! Scrolling being disabled in these layout managers is a part of the explicit choice to not support any scrolling in this table layout,
+        // NOTE! Scrolling being disabled in these layout managers is a part of the explicit choice to not support any scrolling in this Table layout,
         // as this was way too complicated to achieve when using RecyclerViews as the layout's foundation.
         colHeaders.setLayoutManager(new LinearLayoutManager(getContext(), 0, false) {
             @Override
@@ -215,14 +215,14 @@ public class TableLayoutFragment extends Fragment {
         colSumRow.setAdapter(colSumAdapter);
         rowSumCol.setAdapter(rowSumAdapter);
 
-        // if the variables – that store this fragment's copy of the table data – are empty, then table won't be shown
+        // if the variables – that store this fragment's copy of the Table data – are empty, then Table won't be shown
         if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) changeTableVisibility(false);
         
         return rootLayout;
     }
 
     /**
-     * Optimizes the table layout by cropping blank canvas
+     * Optimizes the Table layout by cropping blank canvas
      * and making row height and column widths uniform.
      */
     private void calculateTableDimensions() {
@@ -255,29 +255,9 @@ public class TableLayoutFragment extends Fragment {
     }
 
     /**
-     * Function that populates the {@link TableLayoutFragment#colSums} and {@link TableLayoutFragment#rowSums} {@link List}s
-     * with suitable values calculated based on the {@link TableLayoutFragment#values} variable. Consequentially a pre-condition for
-     * this function to work, is that the {@link TableLayoutFragment#values} variable already is populated with suitable data.
-     * This function should be executed every time after the {@link TableLayoutFragment#values} variable has been re-assigned/updated,
-     * so that the sum-values stay up to date.
-     */
-    private void calculateSums() {
-
-        // properly resetting following variables
-        if (rowSums != null) rowSums.clear();
-        else rowSums = new ArrayList<>();
-        if (colSums != null) colSums.clear();
-        else colSums = new ArrayList<>();
-
-        for (List<Integer> cellValues : values) rowSums.add(0);
-
-        for (int columnValue : values.get(0)) colSums.add(0);
-    }
-
-    /**
-     * Hides the {@link View} objects making up the table and shows the {@link TextView} that substitutes with a message,
-     * or shows the {@link View} objects making up the table and hides the substituting {@link TextView}.
-     * @param visible If set to true, table will be shown. If set to false, table will be hidden.
+     * Hides the {@link View} objects making up the Table and shows the {@link TextView} that substitutes with a message,
+     * or shows the {@link View} objects making up the Table and hides the substituting {@link TextView}.
+     * @param visible If set to true, Table will be shown. If set to false, Table will be hidden.
      */
     private void changeTableVisibility(boolean visible) {
         if (visible) {
@@ -298,13 +278,25 @@ public class TableLayoutFragment extends Fragment {
     }
 
     /**
+     * Notifies appropriate {@link CellAdapter} that an item in its data set was modified.
+     * @param rowIndex Indicates which {@link CellAdapter}.
+     * @param colIndex Indicates which item.
+     */
+    public void notifyItemChanged(int rowIndex, int colIndex, int newRowSum, int newColSum) {
+        rowAdapter.notifyItemChanged(rowIndex, colIndex);
+        rowSums.set(rowIndex, newRowSum);
+        rowSumAdapter.notifyItemChanged(rowIndex);
+        colSums.set(colIndex, newColSum);
+        colSumAdapter.notifyItemChanged(colIndex);
+    }
+
+    /**
      * Updates the {@link TableLayoutFragment}'s copy of the data and notifies all the adapters about it.
-     *
      * @param rowNames The {@link TableLayoutFragment}'s copy of the row names.
      * @param colNames The {@link TableLayoutFragment}'s copy of the column names.
      * @param values   The {@link TableLayoutFragment}'s copy of the values.
      */
-    public void notifyDataSetsChanged(List<String> rowNames, List<String> colNames, List<List<Integer>> values) {
+    public void notifyDataSetsChanged(List<String> rowNames, List<String> colNames, List<List<Integer>> values, List<Integer> rowSums, List<Integer> colSums) {
 
         // properly resetting following variables
         if (this.rowNames != null) this.rowNames.clear();
@@ -313,14 +305,19 @@ public class TableLayoutFragment extends Fragment {
         else this.colNames = new ArrayList<>();
         if (this.values != null) this.values.clear();
         else this.values = new ArrayList<>();
+        if (this.rowSums != null) this.rowSums.clear();
+        else this.rowSums = new ArrayList<>();
+        if (this.colSums != null) this.colSums.clear();
+        else this.colSums = new ArrayList<>();
 
         // adding provided data to the reset variables
         this.rowNames.addAll(rowNames);
         this.colNames.addAll(colNames);
         this.values.addAll(values);
-        calculateSums();
+        this.rowSums.addAll(rowSums);
+        this.colSums.addAll(colSums);
 
-        // determine new height of table
+        // determine new height of Table
         calculateTableDimensions();
 
         // notifying all adapters that the data set has changed
@@ -330,7 +327,7 @@ public class TableLayoutFragment extends Fragment {
         colSumAdapter.notifyDataSetChanged();
         rowSumAdapter.notifyDataSetChanged();
 
-        // toggle table visibility depending on the state of the data set (empty or not empty)
+        // toggle Table visibility depending on the state of the data set (empty or not empty)
         if (this.rowNames.isEmpty() || this.colNames.isEmpty() || this.values.isEmpty())
             changeTableVisibility(false);
         else changeTableVisibility(true);
@@ -338,7 +335,7 @@ public class TableLayoutFragment extends Fragment {
 
     /**
      * For, outside of this fragment, checking whether
-     * the table cell dimension distribution mechanism is armed or not.
+     * the Table cell dimension distribution mechanism is armed or not.
      * @return True if the mechanism is armed, false if its not.
      */
     @Deprecated
@@ -348,7 +345,7 @@ public class TableLayoutFragment extends Fragment {
 
     /**
      * Method that activates a rig that at the right moment
-     * performs a distribution of dynamically determined table cell dimension values.
+     * performs a distribution of dynamically determined Table cell dimension values.
      * The rig resets and "arms" itself when the distribution is finished,
      * allowing for it to be activated again. The method also has built-in functionality for "dodging"
      * overlapping activations.
@@ -402,7 +399,7 @@ public class TableLayoutFragment extends Fragment {
         colSumRow.invalidate();
         rowSumCol.invalidate();
 
-        // the table cell dimension distribution mechanism is reloaded again (to allow being armed again)
+        // the Table cell dimension distribution mechanism is reloaded again (to allow being armed again)
         tableCellDimensionDistributionIsArmed = false;
     }
 }

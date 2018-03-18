@@ -66,7 +66,7 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
     private View dialogLayout;
 
     /**
-     * Variable for the {@link Button} that clears any existing values in the table.
+     * Variable for the {@link Button} that clears any existing values in the Table.
      */
     private Button clearValuesAndResetTableButton;
 
@@ -87,7 +87,7 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
     private SetupListItemTouchHelper rowListItemTouchHelper;
 
     /**
-     * List of the row headers in the table that's being set up.
+     * List of the row headers in the Table that's being set up.
      */
     private RecyclerView rowList;
 
@@ -108,15 +108,20 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
     private SetupListItemTouchHelper colListItemTouchHelper;
 
     /**
-     * List of the column headers in the table that's being set up.
+     * List of the column headers in the Table that's being set up.
      */
     private RecyclerView colList;
 
     /**
-     * Indicates whether a table containing values was set up when this dialog was entered.
+     * Indicates whether a Table containing values was set up when this dialog was entered.
      * Determines if the "Clear values" -button is shown.
      */
     private boolean valuesArePresent = false;
+
+    /**
+     * Flag that indicates whether dialog was dismissed or cancelled.
+     */
+    private boolean dismissFlag = false;
 
     /**
      * Backs up the text that previously in the {@link EditText} input field
@@ -160,6 +165,7 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
+                dismissFlag = true;
                 dialog.dismiss();
             }
         });
@@ -174,7 +180,7 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        setupListener.SetupTable(rowNames, colNames, values);
+        if (dismissFlag) setupListener.SetupTable(rowNames, colNames, values);
         super.onDismiss(dialog);
     }
 
@@ -186,6 +192,30 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
      * @param values   This {@link SetupDialog}'s copy of the values.
      */
     public void loadData(List<String> rowNames, List<String> colNames, List<List<Integer>> values) {
+
+        if (this.rowNames != null) this.rowNames.clear();
+        else this.rowNames = new ArrayList<>();
+        if (this.colNames != null) this.colNames.clear();
+        else this.colNames = new ArrayList<>();
+        if (this.values != null) this.values.clear();
+        else this.values = new ArrayList<>();
+
+        this.rowNames.addAll(rowNames);
+        this.colNames.addAll(colNames);
+        this.values.addAll(values);
+
+        areValuesPresent();
+    }
+
+    /**
+     * Updates the {@link SetupDialog}'s copy
+     * of the row names, column names and values.
+     *
+     * @param rowNames This {@link SetupDialog}'s copy of the row names.
+     * @param colNames This {@link SetupDialog}'s copy of the column names.
+     * @param values   This {@link SetupDialog}'s copy of the values.
+     */
+    public void dumpData(List<String> rowNames, List<String> colNames, List<List<Integer>> values) {
 
         if (this.rowNames != null) this.rowNames.clear();
         else this.rowNames = new ArrayList<>();
@@ -434,7 +464,7 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
     }
 
     /**
-     * Creates a table with the minimum dimensions allowed (2x2) by reformatting
+     * Creates a Table with the minimum dimensions allowed (2x2) by reformatting
      * the variables that hold theTable's data (the high-priority variables: rowNames, colNames, values).
      */
     private void setUpNewTable() {

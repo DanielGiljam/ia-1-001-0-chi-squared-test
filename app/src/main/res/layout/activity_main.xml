@@ -29,15 +29,32 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <fragment
-        android:id="@+id/table_layout_fragment"
-        android:name="com.giljam.daniel.chisquaredtest.tablelayout.TableLayoutFragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/significance_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/significance_text"
+            android:textAppearance="@android:style/TextAppearance.Material.DialogWindowTitle" />
+
+        <fragment
+            android:id="@+id/table_layout_fragment"
+            android:name="com.giljam.daniel.chisquaredtest.tablelayout.TableLayoutFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+
 
 </android.support.design.widget.CoordinatorLayout>

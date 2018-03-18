@@ -36,6 +36,10 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
         rows = new ArrayList<>();
     }
 
+    void notifyItemChanged(int rowIndex, int colIndex) {
+        cellAdapters.get(rowIndex).notifyItemChanged(colIndex);
+    }
+
     /*public int getCellButtonWidth() {
         return cellAdapters.get(0).getButtonWidth();
     }
@@ -60,10 +64,6 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
         for (CellAdapter cellAdapter : cellAdapters) cellAdapter.setButtonHeight(false, 0);
     }*/
 
-    private Context getContext() {
-        return context;
-    }
-
     @Override
     public RowAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -74,10 +74,10 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RowAdapter.ViewHolder viewHolder, int position) {
-        CellAdapter cellAdapter = new CellAdapter(getContext(), position, values.get(position));
+        CellAdapter cellAdapter = new CellAdapter(context, position, values.get(position));
         cellAdapters.add(position, cellAdapter);
         rows.add(position, viewHolder.row);
-        rows.get(position).setLayoutManager(new LinearLayoutManager(getContext(), 0, false) {
+        rows.get(position).setLayoutManager(new LinearLayoutManager(context, 0, false) {
             @Override
             public boolean canScrollHorizontally() {
                 return false;

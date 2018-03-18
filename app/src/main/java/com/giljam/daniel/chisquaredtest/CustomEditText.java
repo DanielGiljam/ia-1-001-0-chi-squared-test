@@ -1,4 +1,4 @@
-package com.giljam.daniel.chisquaredtest.setup;
+package com.giljam.daniel.chisquaredtest;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,13 +6,13 @@ import android.view.KeyEvent;
 
 public class CustomEditText extends android.support.v7.widget.AppCompatEditText {
 
-    interface SoftKeyboardBackInterceptor {
+    public interface SoftKeyboardBackInterceptor {
         void OnBackPressed();
     }
 
     private SoftKeyboardBackInterceptor skbInterceptor;
 
-    void setSkbInterceptor(SoftKeyboardBackInterceptor skbInterceptor) {
+    public void setSkbInterceptor(SoftKeyboardBackInterceptor skbInterceptor) {
         this.skbInterceptor = skbInterceptor;
     }
 

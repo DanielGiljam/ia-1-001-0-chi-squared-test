@@ -2,12 +2,12 @@
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:defaultFocusHighlightEnabled="false"
+    android:background="?android:attr/colorBackgroundFloating"
     android:focusableInTouchMode="true"
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/set_up_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_column="0"

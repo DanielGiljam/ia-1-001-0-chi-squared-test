@@ -8,17 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.giljam.daniel.chisquaredtest.MainActivity;
 import com.giljam.daniel.chisquaredtest.R;
 
 import java.util.List;
 
 public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public Button button;
+        Button button;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             button = itemView.findViewById(R.id.cell_button);
             /*button.post(new Runnable() {
@@ -32,7 +33,17 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
         }
     }
 
+    public interface ValueListener {
+        void OnValueChanged(int value, int rowIndex, int colIndex, boolean showBreadcrumb);
+        void ShowSpecifyValueDialog(final String value, final int rowIndex, final int colIndex);
+    }
+
+    private ValueListener valueListener;
+
     private Context context;
+
+    private int rowIndex;
+
     private List<Integer> cellValues;
 
     /*private int buttonWidth = 0;
@@ -43,9 +54,27 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
 
     private int debugIterator = 0;*/
 
-    public CellAdapter(Context context, List<Integer> cellValues) {
+    CellAdapter(Context context, int rowIndex, List<Integer> cellValues) {
+        valueListener = ((MainActivity)context);
         this.context = context;
+        this.rowIndex = rowIndex;
         this.cellValues = cellValues;
+    }
+
+    private void MonitorButton(final Button button, final int rowIndex, final int colIndex) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                valueListener.OnValueChanged(cellValues.get(colIndex) + 1, rowIndex, colIndex, true);
+            }
+        });
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                valueListener.ShowSpecifyValueDialog(button.getText().toString(), rowIndex, colIndex);
+                return true;
+            }
+        });
     }
 
     /*public int getButtonWidth() {
@@ -66,10 +95,6 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
         buttonHeight = height;
     }*/
 
-    private Context getContext() {
-        return context;
-    }
-
     @Override
     public CellAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -81,8 +106,9 @@ public class CellAdapter extends RecyclerView.Adapter<CellAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(CellAdapter.ViewHolder viewHolder, int position) {
         Button button = viewHolder.button;
-        CharSequence text = Html.fromHtml(getContext().getString(R.string.cell_button_text, cellValues.get(position)));
+        CharSequence text = Html.fromHtml(context.getString(R.string.cell_button_text, cellValues.get(position)));
         button.setText(text);
+        MonitorButton(button, rowIndex, position);
         /*if (adaptWidth) button.setWidth(buttonWidth);
         if (adaptHeight) button.setHeight(buttonHeight);*/
     }

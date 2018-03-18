@@ -14,11 +14,11 @@ import java.util.List;
 
 public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public RecyclerView row;
+        RecyclerView row;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             row = itemView.findViewById(R.id.row_recycler_view);
         }
@@ -29,7 +29,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
     private List<CellAdapter> cellAdapters;
     private List<RecyclerView> rows;
 
-    public RowAdapter(Context context, List<List<Integer>> values) {
+    RowAdapter(Context context, List<List<Integer>> values) {
         this.context = context;
         this.values = values;
         cellAdapters = new ArrayList<>();
@@ -74,7 +74,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RowAdapter.ViewHolder viewHolder, int position) {
-        CellAdapter cellAdapter = new CellAdapter(getContext(), values.get(position));
+        CellAdapter cellAdapter = new CellAdapter(getContext(), position, values.get(position));
         cellAdapters.add(position, cellAdapter);
         rows.add(position, viewHolder.row);
         rows.get(position).setLayoutManager(new LinearLayoutManager(getContext(), 0, false) {

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -20,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.giljam.daniel.chisquaredtest.CustomEditText;
+import com.giljam.daniel.chisquaredtest.MainActivity;
 import com.giljam.daniel.chisquaredtest.R;
 
 import java.util.ArrayList;
@@ -123,40 +126,26 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
 
     /**
      * Use this factory method to create an instance of this fragment.
-     * @param rowNames This {@link SetupDialog}'s copy of the row names.
-     * @param colNames This {@link SetupDialog}'s copy of the column names.
-     * @param values This {@link SetupDialog}'s copy of the values.
-     * @param maxRows The maximum amount of rows that the user is allowed to create.
-     * @param maxCols The maximum amount of columns that the user is allowed to create.
+     * @param maxDisplayableTable The return values of {@link MainActivity#CalculateMaxDisplayableTable()}.
      * @return A new instance of fragment TableLayoutFragment.
      */
-    public static SetupDialog newInstance(List<String> rowNames,
-                                          List<String> colNames,
-                                          List<List<Integer>> values,
-                                          int maxRows,
-                                          int maxCols) {
+    public static SetupDialog newInstance(int[] maxDisplayableTable) {
+
         // Instantiate this dialog
         SetupDialog dialog = new SetupDialog();
 
         // Pass provided parameter values (if they exist) to this instance of the dialog
-        if (maxRows < 2) dialog.maxRows = 2;
-        else dialog.maxRows = maxRows;
-        if (maxCols < 2) dialog.maxCols = 2;
-        else dialog.maxCols = maxCols;
-        if (rowNames == null || colNames == null || values == null) {
-            dialog.setUpNewTable();
-        } else {
-            dialog.rowNames = rowNames;
-            dialog.colNames = colNames;
-            dialog.values = values;
-            dialog.areValuesPresent();
-        }
+        if (maxDisplayableTable[0] < 2) dialog.maxRows = 2;
+        else dialog.maxRows = maxDisplayableTable[0];
+        if (maxDisplayableTable[1] < 2) dialog.maxCols = 2;
+        else dialog.maxCols = maxDisplayableTable[1];
 
         return dialog;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (rowNames.isEmpty() || colNames.isEmpty() || values.isEmpty()) setUpNewTable();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         dialogLayout = layoutInflater.inflate(R.layout.dialog_set_up, null, false);
@@ -175,6 +164,25 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
             }
         });
         return builder.create();
+    }
+
+    /**
+     * Custom "show" method that updates the {@link SetupDialog}'s copy
+     * of the row names, column names and values.
+     * @param manager A instance of {@link FragmentManager} needed to forward
+     *                the "show" method to the superclasses' implementation of it.
+     * @param rowNames This {@link SetupDialog}'s copy of the row names.
+     * @param colNames This {@link SetupDialog}'s copy of the column names.
+     * @param values This {@link SetupDialog}'s copy of the values.
+     */
+    public void show(FragmentManager manager, List<String> rowNames, List<String> colNames, List<List<Integer>> values) {
+        if (rowNames != null && colNames != null && values != null) {
+            this.rowNames = rowNames;
+            this.colNames = colNames;
+            this.values = values;
+            areValuesPresent();
+        }
+        super.show(manager, getTag());
     }
 
     /**
@@ -480,8 +488,9 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     dialogLayout.requestFocus();
+                    return false;
                 }
-                return false;
+                return true;
             }
         });
         listItemInputField.setOnKeyListener(new View.OnKeyListener() {
@@ -489,6 +498,7 @@ public class SetupDialog extends DialogFragment implements SetupListAdapter.Adap
             public boolean onKey(View view, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     dialogLayout.requestFocus();
+                    return false;
                 }
                 return false;
             }

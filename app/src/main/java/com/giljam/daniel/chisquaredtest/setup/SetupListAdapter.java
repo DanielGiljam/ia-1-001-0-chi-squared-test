@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.giljam.daniel.chisquaredtest.CustomEditText;
 import com.giljam.daniel.chisquaredtest.R;
 
 import java.util.List;

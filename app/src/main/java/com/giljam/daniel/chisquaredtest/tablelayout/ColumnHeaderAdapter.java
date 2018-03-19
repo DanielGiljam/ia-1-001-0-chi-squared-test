@@ -11,6 +11,10 @@ import com.giljam.daniel.chisquaredtest.R;
 
 import java.util.List;
 
+/**
+ * @author Daniel Giljam
+ * @since 2018-02-16
+ */
 public class ColumnHeaderAdapter extends RecyclerView.Adapter<ColumnHeaderAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {

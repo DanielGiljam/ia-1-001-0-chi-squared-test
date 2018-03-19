@@ -3,6 +3,10 @@ package com.giljam.daniel.chisquaredtest.chi;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Jon Wikström
+ * @since 2018
+ */
 public class Misc {
     
     public static int add(List<Integer> values) {

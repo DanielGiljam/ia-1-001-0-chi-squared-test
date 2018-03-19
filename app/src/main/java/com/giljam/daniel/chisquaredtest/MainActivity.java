@@ -30,6 +30,10 @@ import java.util.Locale;
 
 import static com.giljam.daniel.chisquaredtest.chi.Misc.valuesProjectionGenerator;
 
+/**
+ * @author Daniel Giljam
+ * @since 2018-02-14
+ */
 public class MainActivity extends AppCompatActivity implements SetupDialog.SetupListener, CellAdapter.ValueListener {
 
     /**

@@ -3,6 +3,10 @@ package com.giljam.daniel.chisquaredtest.setup;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 
+/**
+ * @author Daniel Giljam
+ * @since 2018
+ */
 public class SetupListLayoutManager extends LinearLayoutManager {
 
     private boolean canScrollVertically = false;

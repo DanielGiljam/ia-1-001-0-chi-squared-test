@@ -14,5 +14,9 @@
      limitations under the License.
 -->
 
+<!-- See the original text_select_handle_left_material.xml file at https://android.googlesource.com
+     Modified version made by Daniel Giljam, 2018
+-->
+
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
     android:src="@drawable/custom_text_select_handle" />

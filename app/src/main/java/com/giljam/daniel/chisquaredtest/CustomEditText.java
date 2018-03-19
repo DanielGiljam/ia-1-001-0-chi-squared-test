@@ -4,6 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 
+/**
+ * @author Daniel Giljam
+ * @since 2018
+ */
 public class CustomEditText extends android.support.v7.widget.AppCompatEditText {
 
     public interface SoftKeyboardBackInterceptor {

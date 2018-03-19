@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+ * Optimized by Daniel Giljam, 2018-03-18
+ */
+
+/**
+ * @author Jon Wikström
+ * @since 2018
+ */
 public class Table {
     
     private List<Integer> values;

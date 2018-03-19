@@ -11,6 +11,10 @@ import com.giljam.daniel.chisquaredtest.R;
 
 import java.util.List;
 
+/**
+ * @author Daniel Giljam
+ * @since 2018
+ */
 public class SetupListAdapter extends RecyclerView.Adapter<SetupListAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {

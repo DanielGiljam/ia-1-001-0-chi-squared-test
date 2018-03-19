@@ -16,6 +16,10 @@ import com.giljam.daniel.chisquaredtest.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Daniel Giljam
+ * @since 2018-02-16
+ */
 public class TableLayoutFragment extends Fragment {
 
     /**

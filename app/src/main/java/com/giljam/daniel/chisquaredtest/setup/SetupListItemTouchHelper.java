@@ -3,6 +3,10 @@ package com.giljam.daniel.chisquaredtest.setup;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
+/**
+ * @author Daniel Giljam
+ * @since 2018
+ */
 public class SetupListItemTouchHelper extends ItemTouchHelper.Callback {
 
     interface ItemTouchHelperAdapter {
